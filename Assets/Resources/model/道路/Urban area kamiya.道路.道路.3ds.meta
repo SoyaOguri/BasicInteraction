@@ -1,0 +1,173 @@
+fileFormatVersion: 2
+guid: ffde607538934a74d84271dfcb984f18
+timeCreated: 1470277090
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Road1
+    100002: Road10
+    100004: Road11
+    100006: Road12
+    100008: Road13
+    100010: Road14
+    100012: Road15
+    100014: Road16
+    100016: Road17
+    100018: Road18
+    100020: Road19
+    100022: Road2
+    100024: Road20
+    100026: Road3
+    100028: Road4
+    100030: Road5
+    100032: Road6
+    100034: Road7
+    100036: Road8
+    100038: Road9
+    100040: //RootNode
+    400000: Road1
+    400002: Road10
+    400004: Road11
+    400006: Road12
+    400008: Road13
+    400010: Road14
+    400012: Road15
+    400014: Road16
+    400016: Road17
+    400018: Road18
+    400020: Road19
+    400022: Road2
+    400024: Road20
+    400026: Road3
+    400028: Road4
+    400030: Road5
+    400032: Road6
+    400034: Road7
+    400036: Road8
+    400038: Road9
+    400040: //RootNode
+    2300000: Road1
+    2300002: Road10
+    2300004: Road11
+    2300006: Road12
+    2300008: Road13
+    2300010: Road14
+    2300012: Road15
+    2300014: Road16
+    2300016: Road17
+    2300018: Road18
+    2300020: Road19
+    2300022: Road2
+    2300024: Road20
+    2300026: Road3
+    2300028: Road4
+    2300030: Road5
+    2300032: Road6
+    2300034: Road7
+    2300036: Road8
+    2300038: Road9
+    3300000: Road1
+    3300002: Road10
+    3300004: Road11
+    3300006: Road12
+    3300008: Road13
+    3300010: Road14
+    3300012: Road15
+    3300014: Road16
+    3300016: Road17
+    3300018: Road18
+    3300020: Road19
+    3300022: Road2
+    3300024: Road20
+    3300026: Road3
+    3300028: Road4
+    3300030: Road5
+    3300032: Road6
+    3300034: Road7
+    3300036: Road8
+    3300038: Road9
+    4300000: Road1
+    4300002: Road2
+    4300004: Road3
+    4300006: Road4
+    4300008: Road5
+    4300010: Road6
+    4300012: Road7
+    4300014: Road8
+    4300016: Road9
+    4300018: Road10
+    4300020: Road11
+    4300022: Road12
+    4300024: Road13
+    4300026: Road14
+    4300028: Road15
+    4300030: Road16
+    4300032: Road17
+    4300034: Road18
+    4300036: Road19
+    4300038: Road20
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

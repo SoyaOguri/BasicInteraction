@@ -1,0 +1,1113 @@
+fileFormatVersion: 2
+guid: 23bae11de7633ad439ec2e60a699882b
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: back-mirror
+    100002: blk
+    100004: body
+    100006: bottom
+    100008: Box002
+    100010: Box012
+    100012: Box08
+    100014: Box09
+    100016: Box10
+    100018: Box11
+    100020: brake
+    100022: BREAK
+    100024: Camera001.Target
+    100026: Camera002.Target
+    100028: emblem
+    100030: Entity148
+    100032: Entity157
+    100034: Entity191
+    100036: Entity192
+    100038: Entity193
+    100040: Entity206
+    100042: Entity207
+    100044: Entity208
+    100046: Entity209
+    100048: Entity210
+    100050: Entity211
+    100052: Entity218
+    100054: Entity219
+    100056: Entity220
+    100058: Entity221
+    100060: Entity222
+    100062: Entity223
+    100064: Entity224
+    100066: Entity225
+    100068: Entity226
+    100070: Entity227
+    100072: FTIREL
+    100074: FTIRER
+    100076: glass
+    100078: glass_smoke
+    100080: handle
+    100082: headlamp_glass
+    100084: headlamp_metal
+    100086: interior
+    100088: metal
+    100090: metal 1
+    100092: number
+    100094: Object001
+    100096: Plane004
+    100098: Plane01
+    100100: Plane011
+    100102: Plane012
+    100104: Plane013
+    100106: Plane07
+    100108: rearlamp_r01
+    100110: rearlamp_r02
+    100112: rearlamp_w
+    100114: RTIRE
+    100116: wheel
+    100118: WINKERL
+    100120: WINKERR
+    100122: wiper6
+    100124: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8002"
+    100126: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8005"
+    100128: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8006"
+    100130: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8007"
+    100132: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8008"
+    100134: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8009"
+    100136: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8010"
+    100138: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8011"
+    100140: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8012"
+    100142: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8013"
+    100144: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8014"
+    100146: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8015"
+    100148: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8016"
+    100150: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8017"
+    100152: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8018"
+    100154: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8020"
+    100156: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8022"
+    100158: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8023"
+    100160: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8025"
+    100162: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8026"
+    100164: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8040"
+    100166: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8041"
+    100168: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8044"
+    100170: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8054"
+    100172: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8056"
+    100174: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8070"
+    100176: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8071"
+    100178: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8084"
+    100180: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8085"
+    100182: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8089"
+    100184: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8090"
+    100186: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8091"
+    100188: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8092"
+    100190: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8093"
+    100192: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8094"
+    100194: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8095"
+    100196: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C838"
+    100198: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C839"
+    100200: "\u30B0\u30EB\u30FC\u30D7018"
+    100202: "\u30B0\u30EB\u30FC\u30D7019"
+    100204: "\u30B0\u30EB\u30FC\u30D7021"
+    100206: "\u30B0\u30EB\u30FC\u30D7026"
+    100208: "\u30B0\u30EB\u30FC\u30D7030"
+    100210: "\u30B0\u30EB\u30FC\u30D706"
+    100212: "\u30B0\u30EB\u30FC\u30D707"
+    100214: //RootNode
+    400000: back-mirror
+    400002: blk
+    400004: body
+    400006: bottom
+    400008: Box002
+    400010: Box012
+    400012: Box08
+    400014: Box09
+    400016: Box10
+    400018: Box11
+    400020: brake
+    400022: BREAK
+    400024: Camera001.Target
+    400026: Camera002.Target
+    400028: emblem
+    400030: Entity148
+    400032: Entity157
+    400034: Entity191
+    400036: Entity192
+    400038: Entity193
+    400040: Entity206
+    400042: Entity207
+    400044: Entity208
+    400046: Entity209
+    400048: Entity210
+    400050: Entity211
+    400052: Entity218
+    400054: Entity219
+    400056: Entity220
+    400058: Entity221
+    400060: Entity222
+    400062: Entity223
+    400064: Entity224
+    400066: Entity225
+    400068: Entity226
+    400070: Entity227
+    400072: FTIREL
+    400074: FTIRER
+    400076: glass
+    400078: glass_smoke
+    400080: handle
+    400082: headlamp_glass
+    400084: headlamp_metal
+    400086: interior
+    400088: metal
+    400090: metal 1
+    400092: number
+    400094: Object001
+    400096: Plane004
+    400098: Plane01
+    400100: Plane011
+    400102: Plane012
+    400104: Plane013
+    400106: Plane07
+    400108: rearlamp_r01
+    400110: rearlamp_r02
+    400112: rearlamp_w
+    400114: RTIRE
+    400116: wheel
+    400118: WINKERL
+    400120: WINKERR
+    400122: wiper6
+    400124: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8002"
+    400126: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8005"
+    400128: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8006"
+    400130: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8007"
+    400132: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8008"
+    400134: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8009"
+    400136: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8010"
+    400138: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8011"
+    400140: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8012"
+    400142: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8013"
+    400144: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8014"
+    400146: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8015"
+    400148: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8016"
+    400150: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8017"
+    400152: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8018"
+    400154: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8020"
+    400156: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8022"
+    400158: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8023"
+    400160: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8025"
+    400162: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8026"
+    400164: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8040"
+    400166: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8041"
+    400168: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8044"
+    400170: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8054"
+    400172: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8056"
+    400174: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8070"
+    400176: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8071"
+    400178: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8084"
+    400180: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8085"
+    400182: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8089"
+    400184: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8090"
+    400186: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8091"
+    400188: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8092"
+    400190: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8093"
+    400192: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8094"
+    400194: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8095"
+    400196: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C838"
+    400198: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C839"
+    400200: "\u30B0\u30EB\u30FC\u30D7018"
+    400202: "\u30B0\u30EB\u30FC\u30D7019"
+    400204: "\u30B0\u30EB\u30FC\u30D7021"
+    400206: "\u30B0\u30EB\u30FC\u30D7026"
+    400208: "\u30B0\u30EB\u30FC\u30D7030"
+    400210: "\u30B0\u30EB\u30FC\u30D706"
+    400212: "\u30B0\u30EB\u30FC\u30D707"
+    400214: //RootNode
+    2100000: 20 - Default
+    2100002: 11 - Default
+    2100004: 333
+    2100006: 10 - Default
+    2100008: 06 - Default
+    2100010: 09 - Default
+    2100012: 12 - Default
+    2100014: 08 - Default
+    2100016: 19 - Default02
+    2100018: 6_metal
+    2100020: 07 - Default00
+    2100022: 05 - Default
+    2100024: 14 - Default
+    2100026: 15 - Default
+    2100028: 01 - Default5500
+    2100030: 13 - Default
+    2100032: 14 - Default00
+    2300000: bottom
+    2300002: Box002
+    2300004: Box012
+    2300006: Box08
+    2300008: Box09
+    2300010: Box10
+    2300012: Box11
+    2300014: brake
+    2300016: BREAK
+    2300018: Entity148
+    2300020: Entity157
+    2300022: Entity191
+    2300024: Entity192
+    2300026: Entity193
+    2300028: Entity206
+    2300030: Entity207
+    2300032: Entity208
+    2300034: Entity209
+    2300036: Entity210
+    2300038: Entity211
+    2300040: Entity218
+    2300042: Entity219
+    2300044: Entity220
+    2300046: Entity221
+    2300048: Entity222
+    2300050: Entity223
+    2300052: Entity224
+    2300054: Entity225
+    2300056: Entity226
+    2300058: Entity227
+    2300060: FTIREL
+    2300062: FTIRER
+    2300064: headlamp_glass
+    2300066: headlamp_metal
+    2300068: Object001
+    2300070: Plane004
+    2300072: Plane01
+    2300074: Plane011
+    2300076: Plane012
+    2300078: Plane013
+    2300080: Plane07
+    2300082: RTIRE
+    2300084: WINKERL
+    2300086: WINKERR
+    2300088: wiper6
+    2300090: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8002"
+    2300092: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8005"
+    2300094: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8006"
+    2300096: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8007"
+    2300098: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8008"
+    2300100: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8009"
+    2300102: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8010"
+    2300104: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8011"
+    2300106: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8012"
+    2300108: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8013"
+    2300110: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8014"
+    2300112: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8015"
+    2300114: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8016"
+    2300116: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8017"
+    2300118: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8018"
+    2300120: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8020"
+    2300122: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8022"
+    2300124: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8023"
+    2300126: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8025"
+    2300128: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8026"
+    2300130: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8040"
+    2300132: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8041"
+    2300134: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8044"
+    2300136: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8054"
+    2300138: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8056"
+    2300140: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8070"
+    2300142: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8071"
+    2300144: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8084"
+    2300146: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8085"
+    2300148: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8089"
+    2300150: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8090"
+    2300152: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8091"
+    2300154: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8092"
+    2300156: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8093"
+    2300158: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8094"
+    2300160: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8095"
+    2300162: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C838"
+    2300164: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C839"
+    3300000: bottom
+    3300002: Box002
+    3300004: Box012
+    3300006: Box08
+    3300008: Box09
+    3300010: Box10
+    3300012: Box11
+    3300014: brake
+    3300016: BREAK
+    3300018: Entity148
+    3300020: Entity157
+    3300022: Entity191
+    3300024: Entity192
+    3300026: Entity193
+    3300028: Entity206
+    3300030: Entity207
+    3300032: Entity208
+    3300034: Entity209
+    3300036: Entity210
+    3300038: Entity211
+    3300040: Entity218
+    3300042: Entity219
+    3300044: Entity220
+    3300046: Entity221
+    3300048: Entity222
+    3300050: Entity223
+    3300052: Entity224
+    3300054: Entity225
+    3300056: Entity226
+    3300058: Entity227
+    3300060: FTIREL
+    3300062: FTIRER
+    3300064: headlamp_glass
+    3300066: headlamp_metal
+    3300068: Object001
+    3300070: Plane004
+    3300072: Plane01
+    3300074: Plane011
+    3300076: Plane012
+    3300078: Plane013
+    3300080: Plane07
+    3300082: RTIRE
+    3300084: WINKERL
+    3300086: WINKERR
+    3300088: wiper6
+    3300090: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8002"
+    3300092: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8005"
+    3300094: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8006"
+    3300096: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8007"
+    3300098: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8008"
+    3300100: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8009"
+    3300102: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8010"
+    3300104: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8011"
+    3300106: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8012"
+    3300108: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8013"
+    3300110: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8014"
+    3300112: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8015"
+    3300114: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8016"
+    3300116: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8017"
+    3300118: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8018"
+    3300120: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8020"
+    3300122: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8022"
+    3300124: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8023"
+    3300126: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8025"
+    3300128: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8026"
+    3300130: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8040"
+    3300132: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8041"
+    3300134: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8044"
+    3300136: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8054"
+    3300138: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8056"
+    3300140: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8070"
+    3300142: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8071"
+    3300144: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8084"
+    3300146: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8085"
+    3300148: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8089"
+    3300150: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8090"
+    3300152: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8091"
+    3300154: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8092"
+    3300156: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8093"
+    3300158: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8094"
+    3300160: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8095"
+    3300162: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C838"
+    3300164: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C839"
+    4300000: WINKERR
+    4300002: Object001
+    4300004: FTIREL
+    4300006: RTIRE
+    4300008: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8092"
+    4300010: Box002
+    4300012: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8044"
+    4300014: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8040"
+    4300016: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8011"
+    4300018: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8002"
+    4300020: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8095"
+    4300022: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8071"
+    4300024: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8015"
+    4300026: Entity157
+    4300028: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8025"
+    4300030: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8005"
+    4300032: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8026"
+    4300034: wiper6
+    4300036: Plane004
+    4300038: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8010"
+    4300040: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8023"
+    4300042: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8009"
+    4300044: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8022"
+    4300046: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8007"
+    4300048: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8093"
+    4300050: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8014"
+    4300052: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8006"
+    4300054: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8008"
+    4300056: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8012"
+    4300058: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8018"
+    4300060: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8020"
+    4300062: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8016"
+    4300064: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8070"
+    4300066: Box012
+    4300068: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8094"
+    4300070: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8017"
+    4300072: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8013"
+    4300074: WINKERL
+    4300076: Plane07
+    4300078: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C839"
+    4300080: Entity227
+    4300082: Plane011
+    4300084: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8084"
+    4300086: Plane012
+    4300088: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8085"
+    4300090: Plane013
+    4300092: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8091"
+    4300094: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C838"
+    4300096: Entity148
+    4300098: BREAK
+    4300100: Box10
+    4300102: Box11
+    4300104: Box09
+    4300106: Box08
+    4300108: Entity221
+    4300110: Entity223
+    4300112: Entity224
+    4300114: Entity225
+    4300116: Entity226
+    4300118: Entity222
+    4300120: Entity208
+    4300122: Entity211
+    4300124: Entity210
+    4300126: Entity206
+    4300128: Entity209
+    4300130: Entity207
+    4300132: Entity218
+    4300134: Entity219
+    4300136: Entity220
+    4300138: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8089"
+    4300140: Entity191
+    4300142: Entity192
+    4300144: Entity193
+    4300146: Plane01
+    4300148: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8090"
+    4300150: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8041"
+    4300152: headlamp_glass
+    4300154: headlamp_metal
+    4300156: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8056"
+    4300158: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8054"
+    4300160: brake
+    4300162: FTIRER
+    4300164: bottom
+    9500000: //RootNode
+    11100000: //RootNode
+    2186277476908879412: ImportLogs
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
+      human bone 'LeftFoot' not found\n"
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.001
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton:
+    - name: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      parentName: 
+      position: {x: -0.00000006103516, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+      scale: {x: 1, y: 1, z: 1}
+    - name: WINKERR
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: -0.0011601563, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Object001
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: -0.0011601563, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: FTIREL
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: -0.763097, y: -1.3109224, z: 0.31247926}
+      rotation: {x: 0.6300368, y: -0.32101974, z: -0.63003665, w: 0.32101992}
+      scale: {x: 1, y: 1, z: 1}
+    - name: RTIRE
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: -0.0000003051758, y: 1.3949254, z: 0.31247926}
+      rotation: {x: 0.6300368, y: -0.32101974, z: -0.63003665, w: 0.32101992}
+      scale: {x: 1, y: 1, z: 1}
+    - name: blk
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: 0.008965821, z: 0.86139786}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8092"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613978}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Box002
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613978}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8044"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613978}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8040"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613978}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8011"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613978}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8002"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613978}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8095"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613977}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8071"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613979}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8015"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613979}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity157
+      parentName: blk
+      position: {x: -0.45826483, y: 1.7323897, z: 0.34366956}
+      rotation: {x: 0.37679657, y: -0.6114216, z: -0.4407883, w: 0.53841776}
+      scale: {x: 1.000001, y: 1.000001, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8025"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613979}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8005"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613979}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8026"
+      parentName: blk
+      position: {x: -0, y: -0.010125855, z: -0.8613979}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: wiper6
+      parentName: blk
+      position: {x: 0.30683374, y: -1.2677531, z: 0.06413385}
+      rotation: {x: 0.70705926, y: 0.008197126, z: 0.045190427, w: 0.7056613}
+      scale: {x: 1, y: 1.000001, z: 1}
+    - name: body
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000003051758, y: 0, z: 0.8232502}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Plane004
+      parentName: body
+      position: {x: 0.00000003107485, y: 1.0987275, z: 0.5900805}
+      rotation: {x: 0.018154752, y: 0, z: -0, w: 0.9998352}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8010"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8023"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8009"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8022"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8007"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8093"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8014"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8006"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8008"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8012"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8018"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8020"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8016"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8070"
+      parentName: body
+      position: {x: 0.00000003051758, y: -0.0011601563, z: -0.8232501}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: metal
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: 0.29538283, z: 0.9573866}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: metal 1
+      parentName: metal
+      position: {x: -0.00000006103516, y: 0.30571303, z: -0.08139356}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Box012
+      parentName: metal 1
+      position: {x: 0.00000006103516, y: -0.6022559, z: -0.8759931}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8094"
+      parentName: metal
+      position: {x: -0, y: -0.29654285, z: -0.95738673}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: glass_smoke
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: 1.7072667, z: 1.1491812}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8017"
+      parentName: glass_smoke
+      position: {x: -0, y: -1.7084268, z: -1.1491812}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8013"
+      parentName: glass_smoke
+      position: {x: -0, y: -1.7084268, z: -1.1491812}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rearlamp_w
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: 2.0542047, z: 0.94154924}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: WINKERL
+      parentName: rearlamp_w
+      position: {x: -0, y: -2.0553648, z: -0.94154924}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: emblem
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: -0.000119079596, y: -0.031752933, z: 0.73480594}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Plane07
+      parentName: emblem
+      position: {x: -0.41516054, y: 2.2018645, z: 0.14002576}
+      rotation: {x: -0.022544993, y: 0.6393713, z: 0.7679684, w: -0.03034195}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30B0\u30EB\u30FC\u30D7018"
+      parentName: emblem
+      position: {x: 0.00011883164, y: 2.213297, z: 0.14731458}
+      rotation: {x: 0.028856272, y: 0, z: -0, w: 0.9995836}
+      scale: {x: 0.775, y: 0.775, z: 0.775}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C839"
+      parentName: "\u30B0\u30EB\u30FC\u30D7018"
+      position: {x: -0.000000037955587, y: -0.0014570314, z: -0.0010748291}
+      rotation: {x: -0.051005766, y: 0.000000049454954, z: -0.0000000038653343, w: 0.9986984}
+      scale: {x: 1.360064, y: 1.360062, z: 1.360063}
+    - name: Entity227
+      parentName: "\u30B0\u30EB\u30FC\u30D7018"
+      position: {x: -0.000000037955587, y: -0.0014560547, z: -0.001074646}
+      rotation: {x: -0.05100589, y: -0.0000000067727135, z: 0.000000044224652, w: 0.99869835}
+      scale: {x: 1.360063, y: 1.360063, z: 1.360063}
+    - name: "\u30B0\u30EB\u30FC\u30D7030"
+      parentName: emblem
+      position: {x: 0.40667495, y: 2.205516, z: 0.13124305}
+      rotation: {x: 0, y: 0, z: -0.030143047, w: 0.99954563}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Plane011
+      parentName: "\u30B0\u30EB\u30FC\u30D7030"
+      position: {x: -0.11473626, y: 0.009614258, z: 0.00010168458}
+      rotation: {x: 0.02483068, y: 0.63673955, z: 0.7704058, w: 0.020522663}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8084"
+      parentName: "\u30B0\u30EB\u30FC\u30D7030"
+      position: {x: -0.19319832, y: 0.015675293, z: 0.0013370361}
+      rotation: {x: 0.024830678, y: 0.6367396, z: 0.77040577, w: 0.020522662}
+      scale: {x: 0.487602, y: 0.487602, z: 0.487602}
+    - name: "\u30B0\u30EB\u30FC\u30D7021"
+      parentName: emblem
+      position: {x: -0.8531581, y: -0.9583384, z: 0.0039244387}
+      rotation: {x: 0.09316497, y: 0.035408355, z: 0.70621973, w: 0.7009424}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Plane012
+      parentName: "\u30B0\u30EB\u30FC\u30D7021"
+      position: {x: -0.060311526, y: 0.00118573, z: -0.0017439576}
+      rotation: {x: -0.00000013763581, y: 0.7071068, z: 0.7071067, w: -0.0000001376358}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8085"
+      parentName: "\u30B0\u30EB\u30FC\u30D7021"
+      position: {x: -0.13900922, y: 0.0023052369, z: -0.0016721193}
+      rotation: {x: -0.00000013505782, y: 0.7071068, z: 0.70710677, w: -0.00000014046012}
+      scale: {x: 0.487602, y: 0.487602, z: 0.487602}
+    - name: "\u30B0\u30EB\u30FC\u30D7026"
+      parentName: emblem
+      position: {x: 0.8523, y: -0.9583012, z: 0.0066632084}
+      rotation: {x: 0.13398422, y: -0.0148652205, z: 0.7048211, w: 0.6964585}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Plane013
+      parentName: "\u30B0\u30EB\u30FC\u30D7026"
+      position: {x: -0.060311526, y: 0.001185608, z: -0.0017441408}
+      rotation: {x: -0.00000011985513, y: 0.7071068, z: 0.7071068, w: -0.00000015146527}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8091"
+      parentName: "\u30B0\u30EB\u30FC\u30D7026"
+      position: {x: -0.13900934, y: 0.0023049316, z: -0.0016721193}
+      rotation: {x: -0.00000013235669, y: 0.7071068, z: 0.7071068, w: -0.00000014316132}
+      scale: {x: 0.487602, y: 0.487602, z: 0.487602}
+    - name: "\u30B0\u30EB\u30FC\u30D7019"
+      parentName: emblem
+      position: {x: 0.00011866137, y: -2.2076895, z: -0.1389834}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.862, y: 0.862, z: 0.862}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C838"
+      parentName: "\u30B0\u30EB\u30FC\u30D7019"
+      position: {x: -0.000000048637393, y: 0.001322754, z: -0.0013252564}
+      rotation: {x: 0.00000019411883, y: 0.9999494, z: -0.010058786, w: -0.000000059469418}
+      scale: {x: -1.502833, y: -1.502831, z: -1.502832}
+    - name: Entity148
+      parentName: "\u30B0\u30EB\u30FC\u30D7019"
+      position: {x: -0.000000048637393, y: 0.0013225098, z: -0.0013252564}
+      rotation: {x: -0.00000004365133, y: 0.99994946, z: -0.01005831, w: 0.0000000061907506}
+      scale: {x: -1.502834, y: -1.502832, z: -1.502833}
+    - name: rearlamp_r01
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: 1.9479054, z: 0.852257}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: BREAK
+      parentName: rearlamp_r01
+      position: {x: -0, y: -1.9490656, z: -0.85225695}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: number
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.0000001678467, y: -0.031638674, z: 0.57837415}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Box10
+      parentName: number
+      position: {x: -0.00000010230469, y: -2.2174597, z: -0.14587305}
+      rotation: {x: 0.7071068, y: 0, z: -0, w: 0.7071068}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Box11
+      parentName: number
+      position: {x: 0.00000010577872, y: 2.2130098, z: 0.14704041}
+      rotation: {x: 0.7617575, y: 0, z: -0, w: 0.6478623}
+      scale: {x: 1, y: 1, z: 1}
+    - name: wheel
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.0000004272461, y: 0.042001467, z: 0.31247938}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: interior
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.000000091552735, y: 0.32953224, z: 0.8434513}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: handle
+      parentName: interior
+      position: {x: 0.39874145, y: -1.0893422, z: 0.012787964}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Box09
+      parentName: interior
+      position: {x: -0.00000003051758, y: -0.6007712, z: -0.29799563}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Box08
+      parentName: interior
+      position: {x: -0.00000003051758, y: -0.84047973, z: -0.49712747}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30B0\u30EB\u30FC\u30D707"
+      parentName: interior
+      position: {x: 0.40107054, y: -0.51950103, z: -0.0937417}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity221
+      parentName: "\u30B0\u30EB\u30FC\u30D707"
+      position: {x: -0.00000003051758, y: 0.35140297, z: 0.34867984}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity223
+      parentName: "\u30B0\u30EB\u30FC\u30D707"
+      position: {x: -0.23779032, y: -0.18044691, z: -0.31506142}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity224
+      parentName: "\u30B0\u30EB\u30FC\u30D707"
+      position: {x: -0, y: 0.21694496, z: -0.0012605592}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity225
+      parentName: "\u30B0\u30EB\u30FC\u30D707"
+      position: {x: 0.00012023927, y: 0.2342328, z: 0.040732242}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity226
+      parentName: "\u30B0\u30EB\u30FC\u30D707"
+      position: {x: 0.000023773195, y: -0.22238222, z: -0.297693}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity222
+      parentName: "\u30B0\u30EB\u30FC\u30D707"
+      position: {x: 0.23779017, y: -0.18044691, z: -0.31506142}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30B0\u30EB\u30FC\u30D706"
+      parentName: interior
+      position: {x: -0.39339104, y: -0.51950103, z: -0.0937417}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity208
+      parentName: "\u30B0\u30EB\u30FC\u30D706"
+      position: {x: -0.2377903, y: -0.18044691, z: -0.31506142}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity211
+      parentName: "\u30B0\u30EB\u30FC\u30D706"
+      position: {x: -0, y: 0.35140297, z: 0.34867984}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity210
+      parentName: "\u30B0\u30EB\u30FC\u30D706"
+      position: {x: 0.00012026978, y: 0.2342328, z: 0.040732242}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity206
+      parentName: "\u30B0\u30EB\u30FC\u30D706"
+      position: {x: 0.000023803712, y: -0.22238222, z: -0.297693}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity209
+      parentName: "\u30B0\u30EB\u30FC\u30D706"
+      position: {x: 0.00000003051758, y: 0.21694496, z: -0.0012605592}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity207
+      parentName: "\u30B0\u30EB\u30FC\u30D706"
+      position: {x: 0.23779018, y: -0.18044691, z: -0.31506142}
+      rotation: {x: 0, y: 0, z: -0.000000021855694, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity218
+      parentName: interior
+      position: {x: -0.0000033898928, y: 0.7066665, z: 0.07405017}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity219
+      parentName: interior
+      position: {x: 0.36999997, y: 0.86844826, z: 0.23528455}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity220
+      parentName: interior
+      position: {x: -0.37000003, y: 0.86844826, z: 0.23528455}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8089"
+      parentName: interior
+      position: {x: -0.00000003051758, y: -0.3306924, z: -0.84345126}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: back-mirror
+      parentName: interior
+      position: {x: -0.00000003356372, y: -0.72079587, z: 0.47227994}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity191
+      parentName: back-mirror
+      position: {x: -0, y: -0.024905397, z: -0.03362732}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity192
+      parentName: back-mirror
+      position: {x: 0.000121035104, y: -0.0045460206, z: 0.024016602}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Entity193
+      parentName: back-mirror
+      position: {x: -0, y: -0.017012697, z: -0.035193603}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Plane01
+      parentName: interior
+      position: {x: -0.00000003051758, y: -0.003187073, z: -0.5058716}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: glass
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: 0.027488038, z: 1.1454468}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8090"
+      parentName: glass
+      position: {x: -0, y: -0.028648255, z: -1.1454467}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8041"
+      parentName: glass
+      position: {x: -0, y: -0.028648255, z: -1.1454467}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: headlamp_glass
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: -0.0011601563, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: headlamp_metal
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: -0.0011601563, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rearlamp_r02
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.000000091552735, y: 1.9439542, z: 0.85026896}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8056"
+      parentName: rearlamp_r02
+      position: {x: -0.00000003051758, y: -1.9451145, z: -0.8502691}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8054"
+      parentName: rearlamp_r02
+      position: {x: -0.00000003051758, y: -1.9451145, z: -0.8502691}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Camera002.Target
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.0000001014649, y: 0.92376447, z: 0.6508266}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Camera001.Target
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000012212577, y: 1.3964303, z: 0.43210277}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: brake
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: -0.0011601563, z: 0}
+      rotation: {x: -0.5, y: 0.5, z: 0.5, w: -0.49999997}
+      scale: {x: 1, y: 1, z: 1}
+    - name: FTIRER
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.76309794, y: -1.3109218, z: 0.3124793}
+      rotation: {x: 0.6300368, y: -0.32101974, z: -0.63003665, w: 0.32101992}
+      scale: {x: 1, y: 1, z: 1}
+    - name: bottom
+      parentName: "\u30BB\u30C0\u30F3\u30BF\u30A4\u30D71_\u30D7\u30EA\u30A6\u30B9(Clone)"
+      position: {x: 0.00000006103516, y: -0.0011601563, z: 0.2927498}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

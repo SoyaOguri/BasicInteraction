@@ -1,0 +1,89 @@
+# Unity 生成ファイル
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Ll]og/
+Recordings/
+
+# Visual Studio / IDE
+.vs/
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+.idea/
+
+# サードパーティ大容量アセット（再インポート可能）
+Assets/Standard Assets/
+Assets/SampleScenes/
+Assets/BodyGuards/
+Assets/SteamVR/
+Assets/SteamVR_Resources/
+Assets/SteamVR_Input/
+Assets/Fantasy Mall/
+Assets/Man/
+Assets/suzuki/
+Assets/ReZStudios/
+Assets/Plugins/RootMotion/
+Assets/CityVoxelPack/
+Assets/車椅子配布用/
+Assets/AdvancedAnt/
+Assets/Paper World/
+Assets/Free_Street_Props/
+Assets/audi_s3_3ds/
+Assets/Azerilo/
+Assets/SAColliderBuilder/
+Assets/asset_free_Ukraine_cars/
+Assets/UnityChan/
+Assets/MMD4Mecanim/
+Assets/OutPost/
+Assets/Whill_ModelC_3DModel/
+Assets/XR/
+Assets/Tree_Textures/
+Assets/City park/
+Assets/meieki/
+Assets/Sakae/
+Assets/sibuya/
+My project/
+
+# 大容量バイナリ（3Dモデル・テクスチャ）
+*.fbx
+*.FBX
+*.blend
+*.obj
+*.3ds
+*.max
+*.dae
+*.mb
+*.ma
+*.psd
+*.tga
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.tiff
+*.tif
+*.hdr
+*.exr
+*.mp3
+*.wav
+*.ogg
+*.aif
+*.pdf
+*.dll
+*.so
+*.dylib
+*.unitypackage
+
+# 大容量ファイル
+Assets/Resources/model.zip
+
+# 個人設定
+*.userprefs
+*.suo
+*.lnk

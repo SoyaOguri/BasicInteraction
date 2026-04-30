@@ -1,0 +1,387 @@
+fileFormatVersion: 2
+guid: 04f8fc28ab608de4ca5d9a2ec840185b
+timeCreated: 1522999327
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: basketCranpGeo
+    100002: basketFrameGeo
+    100004: basketGeo
+    100006: bellGeo
+    100008: //RootNode
+    100010: brake01Geo
+    100012: brakeCoad01Geo
+    100014: brakeCoad02Geo
+    100016: brakeF01Geo
+    100018: brakeF02Geo
+    100020: brakeF03Geo
+    100022: carrierGeo
+    100024: carrierPartsGeo
+    100026: fenderBstayGeo
+    100028: fenderFGeo
+    100030: fenderFstayGeo
+    100032: gearCrankLGeo
+    100034: gearCrankRGeo
+    100036: gripGeo
+    100038: hundleGeo
+    100040: J_brakeL
+    100042: J_brakeR
+    100044: J_gearCrank
+    100046: J_gearCrankPos
+    100048: J_hundle
+    100050: J_pedalL
+    100052: J_pedalR
+    100054: J_PropScale
+    100056: J_tireA
+    100058: J_tireB
+    100060: light01Geo
+    100062: light02Geo
+    100064: light03Geo
+    100066: light04Geo
+    100068: light05Geo
+    100070: mainFrameGeo
+    100072: parts01Geo
+    100074: pedalLGeo
+    100076: pedalRGeo
+    100078: reflector01Geo
+    100080: reflector02Geo
+    100082: rollerBrakeGeo
+    100084: saddle
+    100086: saddleGeo
+    100088: seatPostGeo
+    100090: spokeBGeo
+    100092: spokeFGeo
+    100094: standGeo
+    100096: standPartsGeo
+    100098: tireBGeo
+    100100: tireFGeo
+    400000: basketCranpGeo
+    400002: basketFrameGeo
+    400004: basketGeo
+    400006: bellGeo
+    400008: //RootNode
+    400010: brake01Geo
+    400012: brakeCoad01Geo
+    400014: brakeCoad02Geo
+    400016: brakeF01Geo
+    400018: brakeF02Geo
+    400020: brakeF03Geo
+    400022: carrierGeo
+    400024: carrierPartsGeo
+    400026: fenderBstayGeo
+    400028: fenderFGeo
+    400030: fenderFstayGeo
+    400032: gearCrankLGeo
+    400034: gearCrankRGeo
+    400036: gripGeo
+    400038: hundleGeo
+    400040: J_brakeL
+    400042: J_brakeR
+    400044: J_gearCrank
+    400046: J_gearCrankPos
+    400048: J_hundle
+    400050: J_pedalL
+    400052: J_pedalR
+    400054: J_PropScale
+    400056: J_tireA
+    400058: J_tireB
+    400060: light01Geo
+    400062: light02Geo
+    400064: light03Geo
+    400066: light04Geo
+    400068: light05Geo
+    400070: mainFrameGeo
+    400072: parts01Geo
+    400074: pedalLGeo
+    400076: pedalRGeo
+    400078: reflector01Geo
+    400080: reflector02Geo
+    400082: rollerBrakeGeo
+    400084: saddle
+    400086: saddleGeo
+    400088: seatPostGeo
+    400090: spokeBGeo
+    400092: spokeFGeo
+    400094: standGeo
+    400096: standPartsGeo
+    400098: tireBGeo
+    400100: tireFGeo
+    4300000: hundleGeo
+    4300002: gripGeo
+    4300004: bellGeo
+    4300006: brake01Geo
+    4300008: basketCranpGeo
+    4300010: basketGeo
+    4300012: basketFrameGeo
+    4300014: fenderFGeo
+    4300016: fenderFstayGeo
+    4300018: spokeFGeo
+    4300020: tireFGeo
+    4300022: light01Geo
+    4300024: light02Geo
+    4300026: light03Geo
+    4300028: light04Geo
+    4300030: light05Geo
+    4300032: brakeF03Geo
+    4300034: brakeF02Geo
+    4300036: brakeF01Geo
+    4300038: brakeCoad01Geo
+    4300040: parts01Geo
+    4300042: saddleGeo
+    4300044: seatPostGeo
+    4300046: gearCrankLGeo
+    4300048: pedalLGeo
+    4300050: gearCrankRGeo
+    4300052: pedalRGeo
+    4300054: mainFrameGeo
+    4300056: brakeCoad02Geo
+    4300058: carrierPartsGeo
+    4300060: carrierGeo
+    4300062: fenderBstayGeo
+    4300064: reflector01Geo
+    4300066: reflector02Geo
+    4300068: standPartsGeo
+    4300070: rollerBrakeGeo
+    4300072: standGeo
+    4300074: spokeBGeo
+    4300076: tireBGeo
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: basketCranpGeo
+    13700002: basketFrameGeo
+    13700004: basketGeo
+    13700006: bellGeo
+    13700008: brake01Geo
+    13700010: brakeCoad01Geo
+    13700012: brakeCoad02Geo
+    13700014: brakeF01Geo
+    13700016: brakeF02Geo
+    13700018: brakeF03Geo
+    13700020: carrierGeo
+    13700022: carrierPartsGeo
+    13700024: fenderBstayGeo
+    13700026: fenderFGeo
+    13700028: fenderFstayGeo
+    13700030: gearCrankLGeo
+    13700032: gearCrankRGeo
+    13700034: gripGeo
+    13700036: hundleGeo
+    13700038: light01Geo
+    13700040: light02Geo
+    13700042: light03Geo
+    13700044: light04Geo
+    13700046: light05Geo
+    13700048: mainFrameGeo
+    13700050: parts01Geo
+    13700052: pedalLGeo
+    13700054: pedalRGeo
+    13700056: reflector01Geo
+    13700058: reflector02Geo
+    13700060: rollerBrakeGeo
+    13700062: saddleGeo
+    13700064: seatPostGeo
+    13700066: spokeBGeo
+    13700068: spokeFGeo
+    13700070: standGeo
+    13700072: standPartsGeo
+    13700074: tireBGeo
+    13700076: tireFGeo
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 59
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: basketCranpGeo
+        weight: 1
+      - path: basketFrameGeo
+        weight: 1
+      - path: basketGeo
+        weight: 1
+      - path: bellGeo
+        weight: 1
+      - path: brake01Geo
+        weight: 1
+      - path: brakeCoad01Geo
+        weight: 1
+      - path: brakeCoad02Geo
+        weight: 1
+      - path: brakeF01Geo
+        weight: 1
+      - path: brakeF02Geo
+        weight: 1
+      - path: brakeF03Geo
+        weight: 1
+      - path: carrierGeo
+        weight: 1
+      - path: carrierPartsGeo
+        weight: 1
+      - path: fenderBstayGeo
+        weight: 1
+      - path: fenderFGeo
+        weight: 1
+      - path: fenderFstayGeo
+        weight: 1
+      - path: gearCrankLGeo
+        weight: 1
+      - path: gearCrankRGeo
+        weight: 1
+      - path: gripGeo
+        weight: 1
+      - path: hundleGeo
+        weight: 1
+      - path: J_PropScale
+        weight: 1
+      - path: J_PropScale/J_gearCrank
+        weight: 1
+      - path: J_PropScale/J_gearCrank/J_pedalL
+        weight: 1
+      - path: J_PropScale/J_gearCrank/J_pedalR
+        weight: 1
+      - path: J_PropScale/J_gearCrankPos
+        weight: 1
+      - path: J_PropScale/J_hundle
+        weight: 1
+      - path: J_PropScale/J_hundle/J_brakeL
+        weight: 1
+      - path: J_PropScale/J_hundle/J_brakeR
+        weight: 1
+      - path: J_PropScale/J_hundle/J_tireA
+        weight: 1
+      - path: J_PropScale/J_tireB
+        weight: 1
+      - path: J_PropScale/saddle
+        weight: 1
+      - path: light01Geo
+        weight: 1
+      - path: light02Geo
+        weight: 1
+      - path: light03Geo
+        weight: 1
+      - path: light04Geo
+        weight: 1
+      - path: light05Geo
+        weight: 1
+      - path: mainFrameGeo
+        weight: 1
+      - path: parts01Geo
+        weight: 1
+      - path: pedalLGeo
+        weight: 1
+      - path: pedalRGeo
+        weight: 1
+      - path: reflector01Geo
+        weight: 1
+      - path: reflector02Geo
+        weight: 1
+      - path: rollerBrakeGeo
+        weight: 1
+      - path: saddleGeo
+        weight: 1
+      - path: seatPostGeo
+        weight: 1
+      - path: spokeBGeo
+        weight: 1
+      - path: spokeFGeo
+        weight: 1
+      - path: standGeo
+        weight: 1
+      - path: standPartsGeo
+        weight: 1
+      - path: tireBGeo
+        weight: 1
+      - path: tireFGeo
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<root>
+  <objectmaster_name>MasterObject</objectmaster_name>
+  <cameramaster_name>CameraMaster</cameramaster_name>
+  <modelbank_name>ModelBank</modelbank_name>
+  <modelbank>
+    <model id="0">Blank</model>
+    <model id="1">SkyCarWrap</model>
+    <model id="2">SkyCarWrapRed</model>
+    <model id="3">SkyCarWrapRed</model>
+  </modelbank>
+</root>

@@ -1,0 +1,2 @@
+SelfSteerGain:1.5
+TrailGain:0.1
