@@ -68,6 +68,37 @@ public class TrialCondition
         c.sightRight = sight;
     }
 
+    // ランダム条件の CSV（Tools/exp2b/generate_random_conditions.py が出力）を読む。
+    // set を指定するとそのセット（A〜D）の 12 行だけを返す
+    public static System.Collections.Generic.List<TrialCondition> ParseRandomCsv(string text, string set = null)
+    {
+        var list = new System.Collections.Generic.List<TrialCondition>();
+        if (string.IsNullOrEmpty(text)) return list;
+        string[] lines = text.Replace("\r", "").Split('\n');
+        if (lines.Length < 2) return list;
+        string[] head = lines[0].Split(',');
+        int Col(string name) { return Array.IndexOf(head, name); }
+        int cId = Col("id"), cSet = Col("set"), cNorm = Col("norm"), cL = Col("sightLeft"), cR = Col("sightRight"),
+            cInfo = Col("info"), cAtt = Col("attention");
+        for (int i = 1; i < lines.Length; i++)
+        {
+            if (lines[i].Trim().Length == 0) continue;
+            string[] v = lines[i].Split(',');
+            if (set != null && v[cSet] != set) continue;
+            list.Add(new TrialCondition
+            {
+                id = v[cId],
+                kind = TrialKind.Random,
+                norm = (NormType)Enum.Parse(typeof(NormType), v[cNorm]),
+                sightLeft = float.Parse(v[cL], CultureInfo.InvariantCulture),
+                sightRight = float.Parse(v[cR], CultureInfo.InvariantCulture),
+                info = (InfoType)Enum.Parse(typeof(InfoType), v[cInfo]),
+                attention = (AttentionType)Enum.Parse(typeof(AttentionType), v[cAtt]),
+            });
+        }
+        return list;
+    }
+
     // ログ用：z を 0/1 と距離の列に展開する
     public const string ZHeader = "Line,Sign,Mark,RedFlash,D_L,D_R,Mirror,Led,Color,CautionSign";
 

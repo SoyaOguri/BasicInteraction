@@ -87,3 +87,6 @@ Assets/Resources/model.zip
 *.userprefs
 *.suo
 *.lnk
+
+# 実験2-b で自作した小さなテクスチャ（マテリアルが参照するので GitHub にも上げる）
+!Assets/2026_11_06_複数インフラ/Textures/*.png

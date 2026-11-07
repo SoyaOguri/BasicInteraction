@@ -29,6 +29,23 @@ public class IntersectionLayout : MonoBehaviour
     public GameObject mirror;
     public GameObject ledBoard;      // 車両接近LED表示板（ランダム条件のみ）
 
+    [Header("交差点の路面（規範ありのとき「止まれ」入りのマテリアルに替える）")]
+    [Tooltip("towndata > 交差点 > Quad3 の MeshRenderer")]
+    public Renderer intersectionSurface;
+    [Tooltip("規範なしのときの路面（白線だけ）")]
+    public Material surfaceDefault;
+    [Tooltip("規範あり（停止線＋標識＋路面表示）のときの路面（停止線と「止まれ」入り）")]
+    public Material surfaceStop;
+    [Tooltip("カラー舗装あり・規範なしの路面（停止線の内側をベンガラ色に塗ったもの）。空ならカラー舗装は Color Pavement のオブジェクトで表す")]
+    public Material surfaceDefaultColor;
+    [Tooltip("カラー舗装あり・規範ありの路面")]
+    public Material surfaceStopColor;
+
+    bool ColorOnSurface
+    {
+        get { return intersectionSurface != null && surfaceDefaultColor != null && surfaceStopColor != null; }
+    }
+
     [Header("塀（L字：道路沿いの辺 Along ＋ 交差道路と平行な辺 Across）")]
     public Transform sightRoot;      // 空なら子の "Sight" を探す
     public Transform leftWallAlong;
@@ -39,6 +56,16 @@ public class IntersectionLayout : MonoBehaviour
     public float wallThickness = 0.15f;
     public float wallAlongLength = 40f;   // 角から手前側へ伸ばす長さ
     public float wallAcrossLength = 40f;  // 角から外側（交差道路と平行）へ伸ばす長さ
+    [Tooltip("ブロック塀テクスチャ 1 枚が表す大きさ [m]（BlockWall.png は 1.6 m 四方）")]
+    public float wallTextureSize = 1.6f;
+
+    [Header("塀の角と交差道路のあいだの空き地（砂利の板）")]
+    public Transform leftLot;
+    public Transform rightLot;
+    [Tooltip("砂利テクスチャ 1 枚が表す大きさ [m]")]
+    public float lotTextureSize = 2f;
+    [Tooltip("空き地の板の高さ（地面に埋もれる場合は少し上げる）")]
+    public float lotHeight = 0.02f;
 
     [Header("幾何（ローカル座標, m）— 既定値は今のシーンの実測値")]
     [Tooltip("交差道路の中心線（白線の中央）から、手前側の建物線までの距離。塀の角の後退距離はこの線から測る")]
@@ -56,7 +83,17 @@ public class IntersectionLayout : MonoBehaviour
     [Tooltip("右から来る車の走行線の z（近い車線なので −）")]
     public float rightCarLaneZ = -1.1f;
 
-    [Header("車（走行線を読み込むときだけ使う）")]
+    [Header("白線（インフラの仮部品を置くときに使う, ローカル座標）")]
+    [Tooltip("自転車側の道路の左の白線の x（ワールド z = 2.9）")]
+    public float bikeRoadLeftLineX = -0.4f;
+    [Tooltip("自転車側の道路の右の白線の x（ワールド z = -2.3）")]
+    public float bikeRoadRightLineX = 4.8f;
+    [Tooltip("交差道路の手前側の白線の z（ワールド x = 1347.1）")]
+    public float crossRoadNearLineZ = -2.5f;
+    [Tooltip("交差道路の向こう側の白線の z（ワールド x = 1352.1）")]
+    public float crossRoadFarLineZ = 2.5f;
+
+    [Header("車（走行線の読み込みと、LED表示板の点灯判定に使う）")]
     public Transform leftCar;
     public Transform rightCar;
 
@@ -64,6 +101,10 @@ public class IntersectionLayout : MonoBehaviour
     public bool livePreview = true;
     [Tooltip("F1〜F10 を選ぶと下の preview に要因条件が入る（0 = 使わない）")]
     [Range(0, 10)] public int factorialPreset = 0;
+    [Tooltip("ランダム条件の CSV（Conditions/random_conditions.csv）")]
+    public TextAsset randomConditionsCsv;
+    [Tooltip("1〜48 を選ぶとランダム条件 R01〜R48 を preview に入れる（Factorial Preset が 0 のときだけ）")]
+    [Range(0, 48)] public int randomPreset = 0;
     public TrialCondition preview = new TrialCondition();
     [Tooltip("再生中に F1〜F10 キーで要因条件を切り替える（テスト用）")]
     public bool debugKeys = true;
@@ -77,8 +118,10 @@ public class IntersectionLayout : MonoBehaviour
 
     public TrialCondition Current { get; private set; }
 
-    float NearEdgeZ { get { return -crossRoadNearEdge; } }
-    float RefZ { get { return NearEdgeZ - referenceBeforeNearEdge; } }
+    // 交差道路の手前側の建物線の z（ローカル）
+    public float NearEdgeZ { get { return -crossRoadNearEdge; } }
+    // 基準点の z（ローカル、自転車の進路上 x = 0）
+    public float RefZ { get { return NearEdgeZ - referenceBeforeNearEdge; } }
 
     // ---------------- 公開 API ----------------
 
@@ -93,8 +136,17 @@ public class IntersectionLayout : MonoBehaviour
         SetActive(stopSign, stop);
         SetActive(stopMark, stop);
         SetActive(redFlash, c.norm == NormType.RedFlash);
+        bool color = c.attention == AttentionType.ColorPavement;
+        if (intersectionSurface != null && surfaceDefault != null && surfaceStop != null)
+        {
+            Material m;
+            if (color && ColorOnSurface) m = stop ? surfaceStopColor : surfaceDefaultColor;
+            else m = stop ? surfaceStop : surfaceDefault;
+            if (intersectionSurface.sharedMaterial != m) intersectionSurface.sharedMaterial = m;
+        }
 
-        SetActive(colorPavement, c.attention == AttentionType.ColorPavement);
+        // 路面のマテリアルでカラー舗装を表すときは、上に重ねる板（Color Pavement）は使わない
+        SetActive(colorPavement, color && !ColorOnSurface);
         SetActive(cautionSign, c.attention == AttentionType.CautionSign);
 
         SetActive(mirror, c.info == InfoType.Mirror);
@@ -171,11 +223,47 @@ public class IntersectionLayout : MonoBehaviour
             across.localRotation = Quaternion.identity;
             across.localScale = new Vector3(wallAcrossLength, wallHeight, t);
         }
+        SetTiling(along, wallAlongLength / wallTextureSize, wallHeight / wallTextureSize);
+        SetTiling(across, wallAcrossLength / wallTextureSize, wallHeight / wallTextureSize);
+
+        // 塀の角と交差道路の建物線のあいだの空き地（砂利）
+        Transform lot = outward < 0f ? leftLot : rightLot;
+        if (lot != null)
+        {
+            float depth = setback;   // 交差道路の建物線から塀までの奥行き
+            bool show = depth > 0.05f;
+            if (lot.gameObject.activeSelf != show) lot.gameObject.SetActive(show);
+            if (show)
+            {
+                lot.localPosition = new Vector3(wallX + outward * wallAcrossLength * 0.5f, lotHeight, NearEdgeZ - depth * 0.5f);
+                lot.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                lot.localScale = new Vector3(wallAcrossLength, depth, 1f);
+                SetTiling(lot, wallAcrossLength / lotTextureSize, depth / lotTextureSize);
+            }
+        }
+    }
+
+    // 1 枚のマテリアルを共有したまま、オブジェクトごとにテクスチャの繰り返し回数を変える
+    static void SetTiling(Transform t, float u, float v)
+    {
+        if (t == null) return;
+        var r = t.GetComponent<Renderer>();
+        if (r == null) return;
+        var block = new MaterialPropertyBlock();
+        r.GetPropertyBlock(block);
+        block.SetVector("_MainTex_ST", new Vector4(u, v, 0f, 0f));
+        r.SetPropertyBlock(block);
     }
 
     static void SetActive(GameObject go, bool on)
     {
         if (go != null && go.activeSelf != on) go.SetActive(on);
+    }
+
+    void Start()
+    {
+        // 再生開始時に、エディタで最後に見ていた条件で一度そろえる（塀のテクスチャの繰り返しもここで設定される）
+        if (Current == null) Apply(preview);
     }
 
     void Update()
@@ -236,6 +324,11 @@ public class IntersectionLayout : MonoBehaviour
         if (factorialPreset >= 1 && factorialPreset <= 10)
         {
             preview = TrialCondition.Factorial(factorialPreset);
+        }
+        else if (randomPreset >= 1 && randomConditionsCsv != null)
+        {
+            var all = TrialCondition.ParseRandomCsv(randomConditionsCsv.text);
+            if (randomPreset <= all.Count) preview = all[randomPreset - 1];
         }
         if (!livePreview || Application.isPlaying) return;
         // OnValidate 中に SetActive すると警告が出るので、1フレーム遅らせる

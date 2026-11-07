@@ -1,0 +1,25 @@
+seed = 20261107, final score = 0.059
+sight bins (m): 11.00, 16.33, 21.67, 27.00
+
+correlation matrix (|r| >= 0.1 marked *; '-' = same axis or info x sight, not targeted)
+              Stop RedFlash      D_L      D_R   Mirror      Led    Color  Caution
+Stop             1  -0.500-   0.000    0.001    0.000    0.000   -0.000    0.000 
+RedFlash   -0.500-        1   0.001   -0.004   -0.000   -0.000   -0.000   -0.000 
+D_L         0.000    0.001         1  -0.003   -0.104-  -0.103-   0.003   -0.000 
+D_R         0.001   -0.004   -0.003         1  -0.370-  -0.370-  -0.003   -0.005 
+Mirror      0.000   -0.000   -0.104-  -0.370-        1  -0.333-   0.000    0.000 
+Led         0.000   -0.000   -0.103-  -0.370-  -0.333-        1   0.000    0.000 
+Color      -0.000   -0.000    0.003   -0.003    0.000    0.000         1  -0.333-
+Caution     0.000   -0.000   -0.000   -0.005    0.000    0.000   -0.333-        1
+
+mirror/LED with min(D) >= 18 m: 0
+
+per set: norm(None/Stop/Red)  Mirror Led Color Caution  cells(both/info/att/none)  binsL  binsR
+  A: 4/4/4   3 3 3 3   3/3/3/3   4/4/4  4/4/4
+  B: 4/4/4   3 3 3 3   3/3/3/3   4/4/4  4/4/4
+  C: 4/4/4   3 3 3 3   3/3/3/3   4/4/4  4/4/4
+  D: 4/4/4   3 3 3 3   3/3/3/3   4/4/4  4/4/4
+
+D_L mean 19.01  D_R mean 19.00  |  info rows min(D): 11.2 - 17.9
+Mirror n=12  mean D_L 18.18  mean D_R 16.03  mean min(D) 13.70
+LED    n=12  mean D_L 18.18  mean D_R 16.03  mean min(D) 13.70
