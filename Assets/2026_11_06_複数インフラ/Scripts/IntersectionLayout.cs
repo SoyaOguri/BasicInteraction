@@ -78,6 +78,10 @@ public class IntersectionLayout : MonoBehaviour
     public float rightWallOffset = 6.4f;
     [Tooltip("基準点：交差道路の手前側の建物線から、さらに手前へ何 m か（スライドの「手前10m」は幅6mの道路の中心からなので、端からは7m）")]
     public float referenceBeforeNearEdge = 7f;
+    [Tooltip("見通しがこの値 [m] 以上の条件は「開けた角」として、塀を Open Setback だけ下げる（今の学習用条件では使わない。手で 100 m 以上を入れたとき用）")]
+    public float sightOpen = 99f;
+    [Tooltip("開けた角のときの塀の角の後退距離 [m]（交差道路の建物線から手前へ）。基準点（7 m 手前）より大きくする")]
+    public float openSetback = 20f;
     [Tooltip("左から来る車の走行線の z（遠い車線なので +）")]
     public float leftCarLaneZ = 1.4f;
     [Tooltip("右から来る車の走行線の z（近い車線なので −）")]
@@ -99,14 +103,14 @@ public class IntersectionLayout : MonoBehaviour
 
     [Header("エディタでのプレビュー")]
     public bool livePreview = true;
-    [Tooltip("F1〜F10 を選ぶと下の preview に要因条件が入る（0 = 使わない）")]
-    [Range(0, 10)] public int factorialPreset = 0;
+    [Tooltip("1〜24 を選ぶと下の preview に学習用条件 F1〜F24 が入る（0 = 使わない）")]
+    [Range(0, 24)] public int factorialPreset = 0;
     [Tooltip("ランダム条件の CSV（Conditions/random_conditions.csv）")]
     public TextAsset randomConditionsCsv;
     [Tooltip("1〜48 を選ぶとランダム条件 R01〜R48 を preview に入れる（Factorial Preset が 0 のときだけ）")]
     [Range(0, 48)] public int randomPreset = 0;
     public TrialCondition preview = new TrialCondition();
-    [Tooltip("再生中に F1〜F10 キーで要因条件を切り替える（テスト用）")]
+    [Tooltip("再生中に F1〜F12 キー（Shift で F13〜F24）で学習用条件を切り替える（テスト用。本番ではオフ）")]
     public bool debugKeys = true;
 
     [Header("結果（読み取り専用）")]
@@ -152,8 +156,17 @@ public class IntersectionLayout : MonoBehaviour
         SetActive(mirror, c.info == InfoType.Mirror);
         SetActive(ledBoard, c.info == InfoType.LedBoard);
 
-        leftSetback = SetbackForSight(leftWallOffset, leftCarLaneZ, c.sightLeft, "左");
-        rightSetback = SetbackForSight(rightWallOffset, rightCarLaneZ, c.sightRight, "右");
+        if (c.UsesSetback)
+        {
+            // 塀の角の位置で決める条件（学習用条件 F1〜F24 と動画調査）
+            leftSetback = c.wallSetbackLeft;
+            rightSetback = c.wallSetbackRight;
+        }
+        else
+        {
+            leftSetback = SetbackForSight(leftWallOffset, leftCarLaneZ, c.sightLeft, "左");
+            rightSetback = SetbackForSight(rightWallOffset, rightCarLaneZ, c.sightRight, "右");
+        }
         PlaceWall(leftWallAlong, leftWallAcross, -leftWallOffset, -1f, leftSetback);
         PlaceWall(rightWallAlong, rightWallAcross, rightWallOffset, +1f, rightSetback);
 
@@ -173,6 +186,7 @@ public class IntersectionLayout : MonoBehaviour
     {
         float laneDist = laneZ - RefZ;           // 基準点から走行線までの前後距離
         float edgeDist = NearEdgeZ - RefZ;       // 基準点から交差道路の端までの前後距離
+        if (sight >= sightOpen) return openSetback;   // 開けた角：塀を大きく下げる
         if (sight <= 0.01f)
         {
             warning += label + ": 見通しが 0 以下です。 ";
@@ -269,11 +283,13 @@ public class IntersectionLayout : MonoBehaviour
     void Update()
     {
         if (!debugKeys) return;
-        for (int i = 1; i <= 10; i++)
+        // F1〜F12 キー → F1〜F12、Shift を押しながら → F13〜F24
+        bool shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        for (int i = 1; i <= 12; i++)
         {
             if (Input.GetKeyDown(KeyCode.F1 + (i - 1)))
             {
-                Apply(TrialCondition.Factorial(i));
+                Apply(TrialCondition.Factorial(shift ? i + 12 : i));
                 Debug.Log("[IntersectionLayout] " + Current);
             }
         }
@@ -321,7 +337,7 @@ public class IntersectionLayout : MonoBehaviour
 #if UNITY_EDITOR
     void OnValidate()
     {
-        if (factorialPreset >= 1 && factorialPreset <= 10)
+        if (factorialPreset >= 1 && factorialPreset <= TrialCondition.FactorialCount)
         {
             preview = TrialCondition.Factorial(factorialPreset);
         }

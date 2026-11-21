@@ -24,6 +24,13 @@ public class BicycleModelCalculator : MonoBehaviour
     public float steerOfset = 1394;
     public float rightRollBase = 29.0f;
     public float leftRollBase = 1238.0f;
+    [Tooltip("起動して、センサの値が届き始めてから Auto Zero Delay 秒たったら、そのときのハンドルと左右の傾きを 0 にする（Z キーと同じ）。" +
+             "起動するときは、誰も乗らずに自転車をまっすぐ立て、ハンドルもまっすぐにしておく")]
+    public bool autoZeroSensorsOnStart = true;
+    public float autoZeroDelay = 3.0f;
+    [SerializeField] string sensorZeroState = "";
+    bool sensorsZeroed = false;
+    float firstSensorTime = -1f;
     [Header("----------------------")]
     public float SelfSteerTerm = 0.0f;
     public float rnd1 = 0.0f;
@@ -197,7 +204,7 @@ public class BicycleModelCalculator : MonoBehaviour
     //ここ調整すること
     const int driveCount = 4096;
     const float tireRadius = 0.35f;
-    const float steerCoefficient = 0.0008f;
+    const float steerCoefficient = 0.0004f;//202610_0.0008から修正
     //const int steerOfset = 1420;
     //const float rightRollBase = 50.0f;
     //const float leftRollBase = 0.1f;
@@ -217,7 +224,34 @@ public class BicycleModelCalculator : MonoBehaviour
     int rolCount = 0;
     float stopTime = 0;
 
+    // ハンドルと左右の傾きのセンサの 0 を、今の値に合わせる（自転車をまっすぐ立て、ハンドルをまっすぐにした状態で）
+    public void ZeroSensors(string why)
+    {
+        Debug.Log(string.Format("[Bicycle] センサの 0 合わせ（{0}）：ハンドル {1} → {2}、右の傾き {3} → {4}、左の傾き {5} → {6}",
+            why, steerOfset, steerData, rightRollBase, leanRightData, leftRollBase, leanLeftData));
+        steerOfset = steerData;
+        rightRollBase = leanRightData;
+        leftRollBase = leanLeftData;
+        sensorsZeroed = true;
+        sensorZeroState = why + "で 0 合わせ済み（" + System.DateTime.Now.ToString("HH:mm:ss") + "）";
+    }
 
+    // 初期位置に戻す（Enter キーと、走行後の評定が終わったとき〈Exp2bTrialManager〉に呼ぶ）
+    public void ResetToStart()
+    {
+        this.transform.position = new Vector3(resetX, resetZ, resetY);
+        x = resetX;
+        y = resetY;
+        this.transform.rotation = Quaternion.Euler(0, resetYaw, 0);
+        yaw = resetYaw;
+
+        // 💡念のため速度やスリップ角なども0にリセットしておくと完璧です
+        velocity = 0;
+        steerAngle = 0;
+        rollAngle = 0;
+        yawRate = 0;
+        slipAngle = 0;
+    }
 
     // Update is called once per frame
     void Update()
@@ -336,44 +370,24 @@ public class BicycleModelCalculator : MonoBehaviour
                 rolCount = 0;
             }
 
-            //この箇所は新たにコメントアウトしました。2025/12/06
-            /*
-            // 画面を左クリックで初期位置に戻る
-            if (Input.GetMouseButtonDown(0))
-            {
-                // this.transform.position = new Vector3(12, 0, 3);
-                // x = 12;
-                // y = 3;
-                // this.transform.rotation = Quaternion.Euler(0, 90, 0);
-                // yaw = 90;
-                // this.transform.position = new Vector3(301, 0, 3);
-                // x = 301;
-                // y = 3;
-                // this.transform.rotation = Quaternion.Euler(0, 0, 0);
-                // yaw = 0;
-                this.transform.position = new Vector3(resetX, resetZ, resetY);
-                x = resetX;
-                y = resetY;
-                this.transform.rotation = Quaternion.Euler(0, resetYaw, 0);
-                yaw = resetYaw;
-            }
-            // エンターキーで初期位置(x軸方向10[m]前)に戻る
+            // エンターキーで初期位置に戻る（左クリックだと誤爆しやすいので、エンターキーだけに絞るのがオススメです）
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                this.transform.position = new Vector3(resetX - 10, resetZ, resetY);
-                x = resetX - 10;
-                y = resetY;
-                this.transform.rotation = Quaternion.Euler(0, resetYaw, 0);
-                yaw = resetYaw;
+                ResetToStart();
             }
-            */
 
             // センサのオフセット値を更新
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                steerOfset = steerData;
-                rightRollBase = leanRightData;
-                leftRollBase = leanLeftData;
+                ZeroSensors("Z キー");
+            }
+            // 起動直後に 1 回だけ自動で合わせる（センサの値が届き始めてから autoZeroDelay 秒後、止まっているとき）
+            if (autoZeroSensorsOnStart && !sensorsZeroed)
+            {
+                bool hasData = steerData != 0 || leanRightData != 0 || leanLeftData != 0;
+                if (hasData && firstSensorTime < 0f) firstSensorTime = Time.time;
+                if (hasData && Time.time - firstSensorTime >= autoZeroDelay && velocity < 0.05f)
+                    ZeroSensors("起動時に自動");
             }
 
             if (velocity <= 0.08)

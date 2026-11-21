@@ -4,13 +4,16 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class DataRecorder : MonoBehaviour {
+public class DataRecorder : MonoBehaviour
+{
 
     public string saveDir;
     public List<EditorTargetList> trackingTarget;
 
     bool isOpen = false;
+
+    // いま書き込み中の時系列ファイルのパス（実験2-b の試行記録から参照する。読み取り専用）
+    public string CurrentFilePath { get; private set; }
 
     [System.Serializable]
     public class EditorTargetList
@@ -44,37 +47,44 @@ public class DataRecorder : MonoBehaviour {
     public List<EditorDataList> list = new List<EditorDataList>();
 
     bool isEnableDir = true;
-
     public int saveDataSize;
-
     string dir;
     float time;
 
     const float deg2rad = Mathf.PI / 180;
 
-    // 開始フラグ等のデータ取得用の親オブジェクト(解析時のデータ切り出しに使用 2023.06)
     public GameObject parentObj;
-    TimeCount tc; // 開始フラグ取得用
-    ShowExpConditions sec; // 試験No取得用
-
+    TimeCount tc;
+    ShowExpConditions sec;
+    public GoalLine goalLine;
     public Text modeText;
     public Text paarmText;
     public Text gainText;
 
     int testNo = 0;
 
-    // Use this for initialization
+    // ---- 実験2-b 用：試行ごとのファイルを外（Exp2bTrialManager）から開く ----
+    //  externallyControlled = true のとき
+    //   ・起動時に自分でファイルを開かない（試行が始まるたびに StartTrialFile で開く）
+    //   ・マウスの左クリックで新しいファイルにしない
+    //   ・各行の time の直後に、試行の条件の列（conditionHeader / conditionValues）を書く
+    //   ・行の最後に、毎フレーム変わる列（dynamicHeader / dynamicValues）を書く（例：車が発進したか）
+    [HideInInspector] public bool externallyControlled = false;
+    string conditionHeader = "";
+    string conditionValues = "";
+    string dynamicHeader = "";
+    System.Func<string> dynamicValues;
+
     void Start()
     {
         sec = parentObj.GetComponent<ShowExpConditions>();
-        testNo = sec.GetNo();
-        OpenFile();
+        if (sec != null) testNo = sec.GetNo();
+        if (!externallyControlled) OpenFile();
         tc = parentObj.GetComponent<TimeCount>();
     }
 
     public void OpenFile(string dir)
     {
-
         if (!System.IO.Directory.Exists(dir))
         {
             Debug.LogWarning("DataRecoderのデータ保存場所が見つかりません\n今回のデータは保存されません！");
@@ -82,30 +92,55 @@ public class DataRecorder : MonoBehaviour {
             return;
         }
 
-        isOpen = true;
-
         testNo = sec.GetNo();
-        dir += @"\data_TestNo" +
-            testNo.ToString("D3") +
-            "_" +
-            System.DateTime.Now.Month.ToString("00") +
-            System.DateTime.Now.Day.ToString("00") +
-            "_" +
-            System.DateTime.Now.Hour.ToString("00") +
-            System.DateTime.Now.Minute.ToString("00") +
-            System.DateTime.Now.Second.ToString("00") +
-            "_" +
-            modeText.text +
-            "_" +
-            paarmText.text +
-            "_" +
-            gainText.text +
-            @".csv";
-        sw = new System.IO.StreamWriter(dir, false, System.Text.Encoding.Default);
-        time = 0;
+        dir += @"\data_TestNo" + testNo.ToString("D3") + "_" + System.DateTime.Now.Month.ToString("00") +
+            System.DateTime.Now.Day.ToString("00") + "_" + System.DateTime.Now.Hour.ToString("00") +
+            System.DateTime.Now.Minute.ToString("00") + System.DateTime.Now.Second.ToString("00") + "_" +
+            modeText.text + "_" + paarmText.text + "_" + gainText.text + @".csv";
+
+        OpenPath(dir);
+    }
+
+    // 実験2-b：試行が始まるたびに呼ぶ。dir が無ければ作る。同じ名前のファイルがあれば _2, _3 … を付ける
+    //   condHeader / condValues : 「,」区切り（先頭の「,」なし）。試行中ずっと同じ値を毎行に書く
+    //   dynHeader / dynValues   : 「,」区切り。毎フレーム dynValues() の結果を行の最後に書く
+    public string StartTrialFile(string dirPath, string fileNameWithoutExt,
+                                 string condHeader, string condValues,
+                                 string dynHeader, System.Func<string> dynValues)
+    {
+        CloseFile();
+        externallyControlled = true;
+        conditionHeader = string.IsNullOrEmpty(condHeader) ? "" : "," + condHeader;
+        conditionValues = string.IsNullOrEmpty(condValues) ? "" : "," + condValues;
+        dynamicHeader = string.IsNullOrEmpty(dynHeader) ? "" : "," + dynHeader;
+        dynamicValues = dynValues;
         try
         {
-            //search FieldInfo
+            System.IO.Directory.CreateDirectory(dirPath);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("DataRecorder: 保存フォルダを作れませんでした（" + dirPath + "）: " + e.Message + "\n今回のデータは保存されません！");
+            isEnableDir = false;
+            return "";
+        }
+        string path = System.IO.Path.Combine(dirPath, fileNameWithoutExt + ".csv");
+        for (int k = 2; System.IO.File.Exists(path); k++)
+            path = System.IO.Path.Combine(dirPath, fileNameWithoutExt + "_" + k + ".csv");
+        isEnableDir = true;
+        OpenPath(path);
+        return path;
+    }
+
+    void OpenPath(string path)
+    {
+        isOpen = true;
+        CurrentFilePath = path;
+        sw = new System.IO.StreamWriter(path, false, System.Text.Encoding.Default);
+        time = 0;
+
+        try
+        {
             for (int i = 0; i < list.Count; i++)
             {
                 if (list[i].name != "None")
@@ -129,13 +164,15 @@ public class DataRecorder : MonoBehaviour {
                 }
             }
         }
-        catch
-        { }
+        catch { }
 
         try
         {
-            //write header
             sw.Write("time");
+            sw.Write(conditionHeader);
+            sw.Write(",StartFlag");
+            sw.Write(",GoalSuccess");
+
             for (int i = 0; i < trackingTarget.Count; i++)
             {
                 if (trackingTarget[i].isWritePosition)
@@ -144,7 +181,8 @@ public class DataRecorder : MonoBehaviour {
                     sw.Write("," + i + "_y_pos_" + trackingTarget[i].obj.name);
                     sw.Write("," + i + "_z_pos_" + trackingTarget[i].obj.name);
                 }
-                if (trackingTarget[i].isWritePosition)
+                // ★修正箇所1：isWritePosition を isWriteRotate に直しました
+                if (trackingTarget[i].isWriteRotate)
                 {
                     sw.Write("," + i + "_roll_" + trackingTarget[i].obj.name);
                     sw.Write("," + i + "_yaw_" + trackingTarget[i].obj.name);
@@ -163,47 +201,16 @@ public class DataRecorder : MonoBehaviour {
         }
         catch { }
 
-        try
-        {
-            //for(int i = 0; i < DSGlobal.current_car_states.num_of_car_data; i++)
-            for (int i = 0; i < 2; i++) // 試験用暫定対策
-                {
-                    sw.Write(",id_" + i + "_x_pos");
-                sw.Write(",id_" + i + "_y_pos");
-                sw.Write(",id_" + i + "_z_pos");
-                sw.Write(",id_" + i + "_roll");
-                sw.Write(",id_" + i + "_pitch");
-                sw.Write(",id_" + i + "_yaw");
-                sw.Write(",id_" + i + "_steer");
-                sw.Write(",id_" + i + "_accel");
-                sw.Write(",id_" + i + "_brake");
-                sw.Write(",id_" + i + "_winker");
-                sw.Write(",id_" + i + "_speed");
-            }
-        }
-        catch { }
+        // ★修正箇所2：昔のシミュレータ用の不要なヘッダー(id_0_x_pos等)を書き出す処理を丸ごと削除しました
 
-        try
-        {
-            sw.Write("," + "StartFlag");
-        }
-        catch
-        { }
-
+        sw.Write(dynamicHeader);
         sw.WriteLine();
     }
 
     public void OpenFile()
     {
-        //open save file
-        if (saveDir == "")
-        {
-            dir = @"C:";
-        }
-        else
-        {
-            dir = saveDir;
-        }
+        if (saveDir == "") dir = @"C:";
+        else dir = saveDir;
         OpenFile(dir);
     }
 
@@ -212,8 +219,7 @@ public class DataRecorder : MonoBehaviour {
         if (isOpen)
         {
             isOpen = false;
-            if (sw != null)
-                sw.Close();
+            if (sw != null) sw.Close();
         }
     }
 
@@ -225,26 +231,23 @@ public class DataRecorder : MonoBehaviour {
 
     private void OnApplicationQuit()
     {
-
         CloseFile();
     }
 
-    //Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!externallyControlled && Input.GetMouseButtonDown(0))
         {
             sec.NextCondition();
             NewFile();
             time = (float)0;
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            sec.NextCondition();
-            NewFile();
-            time = (float)0;
-        }
+    public void StartNewTrialLog()
+    {
+        NewFile();
+        time = (float)0;
     }
 
     float ChangeDomain(float degree)
@@ -254,13 +257,22 @@ public class DataRecorder : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if (!isEnableDir)
-            return;
-
-        if (!isOpen)
-            return;
+        if (!isEnableDir) return;
+        if (!isOpen) return;
 
         sw.Write(time);
+        sw.Write(conditionValues);
+
+        try
+        {
+            string startFlagStr = (tc != null) ? tc.GetGoFlag().ToString() : "0";
+            sw.Write("," + startFlagStr);
+
+            int successValue = (goalLine != null && goalLine.isSuccess) ? 1 : 0;
+            sw.Write("," + successValue);
+        }
+        catch { sw.Write(",0,0"); }
+
         try
         {
             for (int i = 0; i < trackingTarget.Count; i++)
@@ -271,7 +283,8 @@ public class DataRecorder : MonoBehaviour {
                     sw.Write("," + trackingTarget[i].obj.transform.position.y);
                     sw.Write("," + trackingTarget[i].obj.transform.position.z);
                 }
-                if (trackingTarget[i].isWritePosition)
+                // ★修正箇所3：データ書き込み側も isWriteRotate に直しました
+                if (trackingTarget[i].isWriteRotate)
                 {
                     sw.Write("," + ChangeDomain(trackingTarget[i].obj.transform.rotation.eulerAngles.x));
                     sw.Write("," + ChangeDomain(trackingTarget[i].obj.transform.rotation.eulerAngles.y));
@@ -290,34 +303,15 @@ public class DataRecorder : MonoBehaviour {
         }
         catch { }
 
-        try
-        {
-            for (int i = 0; i < DSGlobal.current_car_states.num_of_car_data; i++)
-            {
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].x.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].y.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].z.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].roll.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].pitch.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].yaw.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].steering.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].accelpedal.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].brakepedal.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].winkers.ToString());
-                sw.Write("," + DSGlobal.current_car_states.car_states[i].speed.ToString());
-            }
-        }
-        catch { }
+        // ★修正箇所4：昔のシミュレータ用の不要なデータ(DSGlobal)を書き出す処理を丸ごと削除しました
 
-        try
+        if (dynamicValues != null)
         {
-            sw.Write("," + tc.GetGoFlag().ToString());
+            string d;
+            try { d = dynamicValues(); } catch { d = ""; }
+            sw.Write("," + d);
         }
-        catch { }
-
         sw.WriteLine();
-
         time += Time.fixedDeltaTime;
-
     }
 }
