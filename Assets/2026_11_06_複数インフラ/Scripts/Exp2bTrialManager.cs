@@ -31,7 +31,7 @@ public class Exp2bTrialManager : MonoBehaviour
     public HeadRotationReceiver headTracker;
 
     [Header("走行後の評定（テンキー）")]
-    [Tooltip("走行のあとに評定 9 問を出すフェーズ（「,」区切り。Practice / Set1 / Set2 / Set3）。" +
+    [Tooltip("走行のあとに評定 4 問を出すフェーズ（「,」区切り。Practice / Set1 / Set2 / Set3）。" +
              "空なら出さない。Setting/exp2b.txt の ratePhases が優先")]
     public string ratePhases = "Practice,Set1";
     [Tooltip("車が出る試行（ダミー・練習の車あり）でも評定を出すか")]
@@ -45,6 +45,12 @@ public class Exp2bTrialManager : MonoBehaviour
     [Tooltip("途中から再開するとき：このフェーズの何試行目から始めるか（1 始まり）")]
     public int startTrial = 1;
     public Exp2bBaseOrder baseOrder = Exp2bBaseOrder.FixedShuffle;
+    [Tooltip("練習 3 試行とダミー 4 試行（入れる位置・レイアウト・車の向き）を決める乱数の種。" +
+             "0 なら起動のたびに新しく決める（おすすめ）。途中から再開（startTrial > 1）するときは、" +
+             "被験者のフォルダの P01_Set1_seed.txt に残した前回の種を自動で使う。Setting/exp2b.txt の seed が優先")]
+    public int randomSeed = 0;
+    [Tooltip("確認用：この起動で使っている種")]
+    [SerializeField] int usedSeed;
 
     [Header("車ありの試行（ダミー・練習）")]
     [Tooltip("車が自転車より何秒早く交差点（自転車の進路との交点）に着くようにするか。0 = 同時。" +
@@ -147,14 +153,16 @@ public class Exp2bTrialManager : MonoBehaviour
         if (headTracker == null) headTracker = FindObjectOfType<HeadRotationReceiver>();
         timeCount = FindObjectOfType<TimeCount>();
         OpenSync();
-        trials = Exp2bSchedule.Phase(phase, participant, baseOrder);
+        OpenLog();
+        usedSeed = DecideSeed();
+        trials = Exp2bSchedule.Phase(phase, participant, baseOrder, usedSeed);
+        SaveSeed();
         BuildFullSequence();
         trialCount = trials.Count;
         if (goalLine != null) goalLine.SetTimeLimit(timeLimit);
         ApplyCarSafeDistance();
         SetupCollisionMonitor();
         SetupProgressText();
-        OpenLog();
         Debug.Log(string.Format("[Exp2b] 被験者 {0} / {1} / {2} 試行（{3} 試行目から）", participant, phase, trials.Count, startTrial));
         BeginTrial(Mathf.Clamp(startTrial, 1, trials.Count) - 1, true);
     }
@@ -241,8 +249,7 @@ public class Exp2bTrialManager : MonoBehaviour
             c.id, c.kind.ToString(), c.factorialNo.ToString(), c.ZValues(), c.carSpawn.ToString(), seen.ToString(),
         });
         string path = Path.Combine(savingTo, string.Format("P{0:D2}_ratings.csv", participant));
-        string title = string.Format("{0}　{1} / {2} 試行目　　いま走った交差点について、当てはまるものを選んでください",
-            PhaseLabel(), trialNumber, trials.Count);
+        string title = PhaseLabel() + "　" + TrialLabel() + "　　いま走った交差点について、当てはまるものを選んでください";
         if (progressText != null) progressText.text = "評定中";
         ratingPanel.Begin(path, header, values, title, () =>
         {
@@ -288,6 +295,7 @@ public class Exp2bTrialManager : MonoBehaviour
                     case "participant": participant = Mathf.Clamp(int.Parse(val, f), 1, Exp2bSchedule.Participants); break;
                     case "phase": phase = (Exp2bPhase)System.Enum.Parse(typeof(Exp2bPhase), val, true); break;
                     case "starttrial": startTrial = Mathf.Max(1, int.Parse(val, f)); break;
+                    case "seed": randomSeed = int.Parse(val, f); break;
                     case "baseorder": baseOrder = (Exp2bBaseOrder)System.Enum.Parse(typeof(Exp2bBaseOrder), val, true); break;
                     case "carleadseconds": carLeadSeconds = float.Parse(val, f); break;
                     case "carsafedistance": carSafeDistance = float.Parse(val, f); break;
@@ -377,7 +385,7 @@ public class Exp2bTrialManager : MonoBehaviour
         if (headTracker != null) headTracker.BeginAutoZero(() => bicycle != null ? bicycle.velocity : float.MaxValue);
         OpenTrialData(c);
         if (progressText != null)
-            progressText.text = string.Format("{0}　{1} / {2} 試行目", PhaseLabel(), trialNumber, trials.Count);
+            progressText.text = PhaseLabel() + "　" + TrialLabel();
         Debug.Log(string.Format("[Exp2b] {0} {1}/{2}: {3}", phase, trialNumber, trials.Count, c));
     }
 
@@ -528,6 +536,17 @@ public class Exp2bTrialManager : MonoBehaviour
         }
     }
 
+    // 練習の試行は「練習 2 / 3」、本番は練習を除いて「5 / 28 試行目」と数える
+    string TrialLabel()
+    {
+        int nPractice = 0;
+        foreach (var t in trials) if (t.kind == TrialKind.Practice) nPractice++;
+        if (phase != Exp2bPhase.Practice && trials[index].kind == TrialKind.Practice)
+            return string.Format("練習 {0} / {1}", trialNumber, nPractice);
+        int off = phase == Exp2bPhase.Practice ? 0 : nPractice;
+        return string.Format("{0} / {1} 試行目", trialNumber - off, trials.Count - off);
+    }
+
     // 画面左下の文字（タイマーと試行番号）を、画面の大きさに合わせて大きくし、上下に分けて置く
     //   下：校門通過制限時間まで 00:25（GoalLine.timerText）
     //   上：セット1　5 / 28 試行目（タイマーの文字をコピーして作る）
@@ -632,8 +651,85 @@ public class Exp2bTrialManager : MonoBehaviour
         fullSequence = new List<TrialCondition>();
         foreach (Exp2bPhase p in new[] { Exp2bPhase.Practice, Exp2bPhase.Set1, Exp2bPhase.Set2, Exp2bPhase.Set3 })
         {
+            // 練習は各セットの最初に入っているので、独立の練習フェーズ（Practice）は数えない（それを走っているときだけ数える）
+            if (p == Exp2bPhase.Practice && phase != Exp2bPhase.Practice) continue;
             if (p == phase) fullOffset = fullSequence.Count;
-            fullSequence.AddRange(Exp2bSchedule.Phase(p, participant, baseOrder));
+            // ほかのセットの並び：そのセットで使った種が残っていればそれ、無ければ既定の種で近似する
+            int sd = p == phase ? usedSeed : (ReadSeed(p) ?? Exp2bSchedule.DefaultSeed(participant, p));
+            fullSequence.AddRange(Exp2bSchedule.Phase(p, participant, baseOrder, sd));
+        }
+    }
+
+    // ---------------- 練習とダミーの乱数の種 ----------------
+    //  P01_Set1_seed.txt に 1 起動 1 行で追記する：日時,種,試行の id（並び順）
+    //  途中から再開（startTrial > 1）するときは、最後の行の種を使って同じ並びを作り直す
+
+    string SeedPath(Exp2bPhase p)
+    {
+        return Path.Combine(savingTo, string.Format("P{0:D2}_{1}_seed.txt", participant, p));
+    }
+
+    int DecideSeed()
+    {
+        if (phase == Exp2bPhase.Practice) return 0;
+        if (randomSeed != 0)
+        {
+            Debug.Log("[Exp2b] 設定の種を使います: " + randomSeed);
+            return randomSeed;
+        }
+        if (startTrial > 1)
+        {
+            int? prev = ReadSeed(phase);
+            if (prev.HasValue)
+            {
+                Debug.Log("[Exp2b] 途中から再開するので、前回の種を使います: " + prev.Value);
+                return prev.Value;
+            }
+            Debug.LogWarning("[Exp2b] 途中から再開しますが、前回の種（" + SeedPath(phase) + "）が無いので、新しい並びになります");
+        }
+        return new System.Random().Next(1, int.MaxValue);
+    }
+
+    int? ReadSeed(Exp2bPhase p)
+    {
+        try
+        {
+            string path = SeedPath(p);
+            if (!File.Exists(path)) return null;
+            string[] lines = File.ReadAllLines(path);
+            for (int k = lines.Length - 1; k >= 0; k--)
+            {
+                string[] v = lines[k].Split(',');
+                int sd;
+                if (v.Length >= 2 && int.TryParse(v[1].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out sd) && sd != 0)
+                    return sd;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("[Exp2b] 種のファイルを読めませんでした: " + e.Message);
+        }
+        return null;
+    }
+
+    void SaveSeed()
+    {
+        if (phase == Exp2bPhase.Practice) return;
+        try
+        {
+            string path = SeedPath(phase);
+            if (!File.Exists(path))
+                File.WriteAllText(path, "clock,seed,startTrial,order\r\n", new System.Text.UTF8Encoding(true));
+            var ids = new List<string>();
+            foreach (var t in trials) ids.Add(t.id);
+            File.AppendAllText(path, string.Format("{0},{1},{2},{3}\r\n",
+                System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), usedSeed, startTrial, string.Join(" ", ids.ToArray())),
+                new System.Text.UTF8Encoding(false));
+            Debug.Log("[Exp2b] 練習とダミーの種 " + usedSeed + "：" + string.Join(" ", ids.ToArray()));
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("[Exp2b] 種を保存できませんでした: " + e.Message);
         }
     }
 
@@ -672,6 +768,7 @@ public class Exp2bTrialManager : MonoBehaviour
 
     // ---------------- 全員ぶんの試行順を書き出す（確認・資料用） ----------------
 
+    // ※ 練習とダミーは起動のたびに変わるので、ここで書き出すのは既定の種で作った一例（学習用 24 条件の順番は本番と同じ）
     [ContextMenu("全被験者の試行順を CSV に書き出す")]
     void ExportSchedule()
     {
@@ -683,7 +780,7 @@ public class Exp2bTrialManager : MonoBehaviour
             {
                 foreach (Exp2bPhase ph in new[] { Exp2bPhase.Practice, Exp2bPhase.Set1, Exp2bPhase.Set2, Exp2bPhase.Set3 })
                 {
-                    var list = Exp2bSchedule.Phase(ph, p, baseOrder);
+                    var list = Exp2bSchedule.Phase(ph, p, baseOrder, Exp2bSchedule.DefaultSeed(p, ph));
                     for (int i = 0; i < list.Count; i++)
                     {
                         var c = list[i];

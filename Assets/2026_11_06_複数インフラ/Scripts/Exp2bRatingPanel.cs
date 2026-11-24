@@ -4,8 +4,11 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 走行のあとに、交差点の評定 9 問をテンキーで答えてもらう画面（正面の画面に重ねて出す）
-//  ・問いと選択肢は動画調査（第2版）と同じ。5 段階、全部「そう思う」ほどその性質が強い向き。並びは規範→注意喚起→確認のしやすさで固定
+// 走行のあとに、交差点の評定をテンキーで答えてもらう画面（正面の画面に重ねて出す）
+//  ・問いは 4 つ：条件の 4 つの要素（規範・見通し・情報・注意喚起）に 1 つずつ。5 段階、全部「そう思う」ほどその性質が強い向き
+//  ・問いの文は Setting/exp2b_ratings.txt（exe の横の Setting フォルダ）に「列名 = 問いの文」で書けば、ビルドし直さずに変えられる
+//    （ファイルが無ければ下の Items の文を使う。問いを変えたら、評定の CSV は別の被験者フォルダか新しいファイルにすること。
+//      列名は最初に書いた見出しのまま追記されるため）
 //  ・1 問ずつ出す。テンキーの 1〜5 で選び、テンキーの Enter で決定して次の問いへ。BS（Backspace）で前の問いに戻る
 //    （上の段の数字キー 1〜5 と、キーボードの Enter でも選べるが、キーボードの Enter は自転車を初期位置に戻すので、決定はテンキーの Enter）
 //  ・実験者は Delete キーで、この試行の評定を飛ばせる（記録には skipped = 1）
@@ -13,18 +16,19 @@ using UnityEngine.UI;
 //  ・答えは被験者のフォルダの P01_ratings.csv に 1 試行 1 行で追記する
 public class Exp2bRatingPanel : MonoBehaviour
 {
-    public static readonly string[][] Items =
+    // 仮の問い（内容はあとで決める）。Setting/exp2b_ratings.txt があればそちらが優先
+    public static readonly string[][] DefaultItems =
     {
-        new[] { "norm1", "ここは、止まらなければいけない交差点だ" },
-        new[] { "norm2", "ここで止まらずに進むと、交通違反になる" },
-        new[] { "norm3", "どこで止まればよいかが、はっきり示されている" },
-        new[] { "alert1", "遠くからでも、交差点があることが目立っていた" },
-        new[] { "alert2", "早い段階で、この先に交差点があると気づけた" },
-        new[] { "alert3", "この先は気をつけるべき場所だと感じた" },
-        new[] { "chk1", "止まらなくても、横から車が来るかどうか確かめられそうだった" },
-        new[] { "chk2", "横から来る車に気づきやすい交差点だった" },
-        new[] { "chk3", "車が来ていないことを確かめやすい交差点だった" },
+        new[] { "norm", "ここは、止まらなければいけない交差点だ" },
+        new[] { "sight", "横から来る車が見えやすい交差点だった" },
+        new[] { "info", "横から車が来るかどうかを、確かめる手がかりがあった" },
+        new[] { "alert", "交差点に着く前の早い段階で、この先は気をつけるべき場所だと感じた" },
     };
+    public string[][] Items = DefaultItems;
+    [Tooltip("問いの文を読むファイル（exe の横の Setting フォルダ）")]
+    public string itemsFileName = "exp2b_ratings.txt";
+    [Tooltip("確認用：読んだ問いのファイル")]
+    [SerializeField] string loadedItems = "";
     public static readonly string[] Agree = { "全く\nそう思わない", "あまり\nそう思わない", "どちらとも\nいえない", "やや\nそう思う", "とても\nそう思う" };
 
     [Tooltip("文字のフォント。空ならタイマーの文字と同じフォントを使う（Exp2bTrialManager が渡す）")]
@@ -57,6 +61,7 @@ public class Exp2bRatingPanel : MonoBehaviour
     // ratingsPath：保存する CSV。header / values：先頭に書く試行の情報（「,」区切り）
     public void Begin(string ratingsPath, string header, string values, string title, System.Action done)
     {
+        if (string.IsNullOrEmpty(loadedItems)) LoadItems();
         Build();
         savePath = ratingsPath;
         rowPrefix = values;
@@ -149,6 +154,31 @@ public class Exp2bRatingPanel : MonoBehaviour
         var done = onDone;
         onDone = null;
         if (done != null) done();
+    }
+
+    // Setting/exp2b_ratings.txt：1 行 1 問、「列名 = 問いの文」（# 以降はコメント）。並んだ順に出す
+    void LoadItems()
+    {
+        string path = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Setting", itemsFileName));
+        loadedItems = "（" + path + " が無いので既定の問い）";
+        if (!File.Exists(path)) return;
+        var list = new List<string[]>();
+        foreach (string raw in File.ReadAllLines(path))
+        {
+            string line = raw;
+            int hash = line.IndexOf('#');
+            if (hash >= 0) line = line.Substring(0, hash);
+            int eq = line.IndexOf('=');
+            if (eq < 0) continue;
+            string key = line.Substring(0, eq).Trim();
+            string text = line.Substring(eq + 1).Trim();
+            if (key.Length == 0 || text.Length == 0 || key.Contains(",")) continue;
+            list.Add(new[] { key, text });
+        }
+        if (list.Count == 0) return;
+        Items = list.ToArray();
+        loadedItems = path;
+        Debug.Log("[Exp2b] 評定の問いを読みました（" + Items.Length + " 問）: " + path);
     }
 
     void EnsureHeader(string header)

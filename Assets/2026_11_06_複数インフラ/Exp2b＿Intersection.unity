@@ -1789,6 +1789,8 @@ MonoBehaviour:
   phase: 0
   startTrial: 1
   baseOrder: 0
+  randomSeed: 0
+  usedSeed: 0
   carLeadSeconds: 1
   carSafeDistance: -1
   collisionMonitor: {fileID: 0}
