@@ -28,9 +28,29 @@ public class BicycleModelCalculator : MonoBehaviour
              "起動するときは、誰も乗らずに自転車をまっすぐ立て、ハンドルもまっすぐにしておく")]
     public bool autoZeroSensorsOnStart = true;
     public float autoZeroDelay = 3.0f;
+    [Tooltip("センサの 0（ハンドル・左右の傾き）を Setting フォルダに残し、同じ日にもう一度起動したときはそれを使う（起動時の自動 0 合わせはしない）。" +
+             "途中から再開するときは人が乗ったまま起動することが多く、そのとき 0 を取り直すと左右に傾いた 0 になってしまうため")]
+    public bool rememberSensorZero = true;
+    public string sensorZeroFile = @"Setting\bicycle_sensor_zero.txt";
     [SerializeField] string sensorZeroState = "";
     bool sensorsZeroed = false;
     float firstSensorTime = -1f;
+
+    [Header("走り出しはまっすぐ進む")]
+    [Tooltip("スタート位置から走り出して、この距離 [m] を進むまでは、向きを変えずにまっすぐ進ませる（0 で無効）。" +
+             "傾きやハンドルの値は記録に残るが、向きには使わない")]
+    public float straightStartDistance = 10f;
+    bool straightLock;
+    float lockX, lockY, lockYaw;
+
+    [Tooltip("まっすぐ進ませている間（走り出しの straightStartDistance m）の左右の傾きの平均を、まっすぐ区間が終わるときに 0 にする" +
+             "（試行ごと。ハンドルの 0 は変えない）。起動したときの状態や、乗った人の座り方で傾きの 0 がずれ、" +
+             "まっすぐ区間のあとにずっと左右に曲がってしまうのを防ぐ")]
+    public bool zeroRollWhileStraight = true;
+    [Tooltip("走り出してから何 m 進んだところから傾きを集めるか（こぎ出しの揺れを外す）")]
+    public float rollZeroFromDistance = 3f;
+    double rollSumR, rollSumL;
+    int rollSamples;
     [Header("----------------------")]
     public float SelfSteerTerm = 0.0f;
     public float rnd1 = 0.0f;
@@ -196,6 +216,115 @@ public class BicycleModelCalculator : MonoBehaviour
         gain_files = Directory.GetFiles(@"Setting\SelfSteerGain", "*.txt");
 
         lastTime = Time.time;
+
+        LoadSensorZero();
+        BeginStraightStart();
+    }
+
+    // スタート位置にいる今の向きのまま、straightStartDistance だけまっすぐ進ませる
+    void BeginStraightStart()
+    {
+        straightLock = straightStartDistance > 0f;
+        lockX = x;
+        lockY = y;
+        lockYaw = yaw;
+        rollSumR = rollSumL = 0;
+        rollSamples = 0;
+    }
+
+    // まっすぐ区間の終わりに、その間の傾きの平均を 0 にする
+    void FinishStraightRollZero()
+    {
+        if (!zeroRollWhileStraight) return;
+        if (rollSamples < 100)
+        {
+            Debug.LogWarning("[Bicycle] まっすぐ区間の傾きが少なすぎるので、傾きの 0 は合わせ直しません");
+            return;
+        }
+        float r = (float)(rollSumR / rollSamples), l = (float)(rollSumL / rollSamples);
+        float before = (float)System.Math.Atan2(((r - rightRollBase) - (l - leftRollBase)) / 2 * rollCoefficient, rollLength);
+        rightRollBase = r;
+        leftRollBase = l;
+        rollAngle = (float)System.Math.Atan2(((leanRightData - rightRollBase) - (leanLeftData - leftRollBase)) / 2 * rollCoefficient, rollLength);
+        sensorZeroState = string.Format("まっすぐ区間で傾きの 0 を合わせ直し（ずれ {0:F3} rad）", before);
+        Debug.Log(string.Format("[Bicycle] {0}：右の傾き → {1}、左の傾き → {2}", sensorZeroState, r, l));
+    }
+
+    // 向きを固定する（傾き・ハンドルで曲がらない）。決めた距離を進んだら解除する
+    void ApplyStraightStart()
+    {
+        if (!straightLock) return;
+        yaw = lockYaw;
+        yawRate = 0;
+        slipAngle = 0;
+        steerDot = 0;
+        float dx = x - lockX, dy = y - lockY;
+        float d2 = dx * dx + dy * dy;
+        if (d2 >= rollZeroFromDistance * rollZeroFromDistance)
+        {
+            rollSumR += leanRightData;
+            rollSumL += leanLeftData;
+            rollSamples++;
+        }
+        if (d2 >= straightStartDistance * straightStartDistance)
+        {
+            straightLock = false;
+            FinishStraightRollZero();
+        }
+    }
+
+    // 同じ日に残したセンサの 0 があれば使う
+    void LoadSensorZero()
+    {
+        if (!rememberSensorZero || !File.Exists(sensorZeroFile)) return;
+        try
+        {
+            var kv = new Dictionary<string, string>();
+            foreach (string line in File.ReadAllLines(sensorZeroFile))
+            {
+                int i = line.IndexOf('=');
+                if (i > 0) kv[line.Substring(0, i).Trim()] = line.Substring(i + 1).Trim();
+            }
+            string today = System.DateTime.Now.ToString("yyyy-MM-dd");
+            if (!kv.ContainsKey("date") || kv["date"] != today)
+            {
+                Debug.Log("[Bicycle] 残っているセンサの 0 は今日のものではないので使いません（起動時に自動で合わせます）");
+                return;
+            }
+            var f = System.Globalization.CultureInfo.InvariantCulture;
+            steerOfset = float.Parse(kv["steer"], f);
+            rightRollBase = float.Parse(kv["right"], f);
+            leftRollBase = float.Parse(kv["left"], f);
+            sensorsZeroed = true;
+            sensorZeroState = "今日の " + kv["time"] + " に合わせた 0 を使用";
+            Debug.Log(string.Format("[Bicycle] {0}：ハンドル {1}、右の傾き {2}、左の傾き {3}",
+                sensorZeroState, steerOfset, rightRollBase, leftRollBase));
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("[Bicycle] センサの 0 のファイルを読めませんでした: " + e.Message);
+        }
+    }
+
+    void SaveSensorZero()
+    {
+        if (!rememberSensorZero) return;
+        try
+        {
+            var f = System.Globalization.CultureInfo.InvariantCulture;
+            var now = System.DateTime.Now;
+            File.WriteAllText(sensorZeroFile,
+                "# 自転車のセンサの 0（BicycleModelCalculator が書く。同じ日に起動し直したときに使う。消すと次の起動で自動で合わせ直す）\r\n" +
+                "date = " + now.ToString("yyyy-MM-dd") + "\r\n" +
+                "time = " + now.ToString("HH:mm:ss") + "\r\n" +
+                "steer = " + steerOfset.ToString("R", f) + "\r\n" +
+                "right = " + rightRollBase.ToString("R", f) + "\r\n" +
+                "left = " + leftRollBase.ToString("R", f) + "\r\n");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("[Bicycle] センサの 0 を保存できませんでした: " + e.Message);
+        }
     }
 
     const float dt = 0.001f;
@@ -234,6 +363,7 @@ public class BicycleModelCalculator : MonoBehaviour
         leftRollBase = leanLeftData;
         sensorsZeroed = true;
         sensorZeroState = why + "で 0 合わせ済み（" + System.DateTime.Now.ToString("HH:mm:ss") + "）";
+        SaveSensorZero();
     }
 
     // 初期位置に戻す（Enter キーと、走行後の評定が終わったとき〈Exp2bTrialManager〉に呼ぶ）
@@ -251,6 +381,8 @@ public class BicycleModelCalculator : MonoBehaviour
         rollAngle = 0;
         yawRate = 0;
         slipAngle = 0;
+        steerDot = 0;
+        BeginStraightStart();
     }
 
     // Update is called once per frame
@@ -402,6 +534,7 @@ public class BicycleModelCalculator : MonoBehaviour
             while (lastTime < Time.time)
             {
                 UpdateState(dt);
+                ApplyStraightStart();
                 lastTime += dt;
             }
 

@@ -14417,7 +14417,12 @@ MonoBehaviour:
   leftRollBase: 1238
   autoZeroSensorsOnStart: 1
   autoZeroDelay: 3
+  rememberSensorZero: 1
+  sensorZeroFile: Setting\bicycle_sensor_zero.txt
   sensorZeroState: 
+  straightStartDistance: 10
+  zeroRollWhileStraight: 1
+  rollZeroFromDistance: 3
   SelfSteerTerm: 0
   rnd1: 0
   rnd2: 0
@@ -19269,6 +19274,8 @@ MonoBehaviour:
   zeroStartSpeed: 1.5
   zeroWindowSeconds: 2
   zeroKey: 122
+  showWarning: 1
+  warnAfterSeconds: 1
   yawZero: 0
   yawRaw: 0
   zeroState: 

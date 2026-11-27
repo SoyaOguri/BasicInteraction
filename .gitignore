@@ -94,3 +94,6 @@ Assets/Resources/model.zip
 # ビルドした exe（大きいので Git に入れない）
 Game/
 実験実行2b/
+
+# 自転車のセンサの 0（起動するたびに書き換わる）
+Setting/bicycle_sensor_zero.txt

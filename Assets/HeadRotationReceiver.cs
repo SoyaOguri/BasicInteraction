@@ -49,6 +49,14 @@ public class HeadRotationReceiver : MonoBehaviour
              "Z は自転車のセンサのオフセット、Space・Tab・R・G・P・矢印・Enter はほかで使っているので避ける")]
     public KeyCode zeroKey = KeyCode.H;
 
+    [Header("届いていないときの警告")]
+    [Tooltip("iPhone から首の向きが届かなくなったら、画面の上に赤い警告を出す")]
+    public bool showWarning = true;
+    [Tooltip("この秒数より長く届かなかったら警告を出す")]
+    public float warnAfterSeconds = 1.0f;
+    [Tooltip("警告の文字の大きさ [px]（画面の高さ 1080 px のとき）")]
+    public int warnFontSize = 18;
+
     [Header("確認用（読み取り専用）")]
     [Tooltip("今の左右の 0 の位置 [deg]（タッチで合わせた向きから見て）。記録の headYawZero")]
     [SerializeField] float yawZero;
@@ -80,6 +88,12 @@ public class HeadRotationReceiver : MonoBehaviour
     public float YawZero { get { return yawZero; } }
     public float YawRaw { get { return yawRaw; } }
     public bool Receiving { get; private set; }
+    // 警告を出しているか（最後に届いてから warnAfterSeconds より長くたった、または一度も届いていない）
+    public bool Lost { get; private set; }
+
+    private float lastReceiveTime = -1f;   // 最後に届いた時刻（-1 = 起動してから一度も届いていない）
+    private GUIStyle warnStyle;
+    private Texture2D warnBg;
 
     void Start()
     {
@@ -106,6 +120,7 @@ public class HeadRotationReceiver : MonoBehaviour
         Receiving = n != lastPacketCount;
         lastPacketCount = n;
         packets = n;
+        UpdateLost();
 
         // 1. スマホのタッチを検知した「瞬間」にリセット
         if (isTouching && !wasTouching)
@@ -180,6 +195,48 @@ public class HeadRotationReceiver : MonoBehaviour
         yawZero = yaw;
         zeroState = string.Format("{0}（{1:F1}°）", why, yaw);
         Debug.Log("[Head] " + zeroState);
+    }
+
+    // 届いているかを見て、途切れたとき・戻ったときに記録に残す
+    void UpdateLost()
+    {
+        if (Receiving) lastReceiveTime = Time.unscaledTime;
+        bool lost = lastReceiveTime < 0f || Time.unscaledTime - lastReceiveTime > warnAfterSeconds;
+        // 起動直後（最初の数秒）は、まだ iPhone がつながる前なので記録には残さない（画面の警告は出す）
+        if (lost != Lost && Time.unscaledTime > 3f)
+        {
+            if (lost) Debug.LogWarning("[Head] iPhone から首の向きが届かなくなりました");
+            else Debug.Log("[Head] iPhone から首の向きがまた届くようになりました");
+        }
+        Lost = lost;
+    }
+
+    // 警告：画面の上の真ん中に赤い帯で出す（実験者が気づけるように。届けば自動で消える）
+    void OnGUI()
+    {
+        if (!showWarning || !Lost) return;
+        if (warnStyle == null)
+        {
+            warnBg = new Texture2D(1, 1);
+            warnBg.SetPixel(0, 0, new Color(0.8f, 0f, 0f, 0.9f));
+            warnBg.Apply();
+            warnStyle = new GUIStyle(GUI.skin.box);
+            warnStyle.normal.background = warnBg;
+            warnStyle.normal.textColor = Color.white;
+            warnStyle.alignment = TextAnchor.MiddleCenter;
+            warnStyle.fontStyle = FontStyle.Bold;
+            warnStyle.wordWrap = false;
+        }
+        float s = Mathf.Max(0.5f, Screen.height / 1080f);
+        warnStyle.fontSize = Mathf.RoundToInt(warnFontSize * s);
+        string msg = lastReceiveTime < 0f
+            ? "首の向きが届いていません（iPhone の ZIG SIM を確認）"
+            : string.Format("首の向きが届いていません（{0:F0} 秒前から。iPhone の ZIG SIM を確認）",
+                            Time.unscaledTime - lastReceiveTime);
+        // 帯の幅は文字に合わせる（左右に少し余白）
+        Vector2 size = warnStyle.CalcSize(new GUIContent(msg));
+        float w = Mathf.Min(Screen.width, size.x + 30f * s), h = size.y + 12f * s;
+        GUI.Box(new Rect((Screen.width - w) * 0.5f, 10f * s, w, h), msg, warnStyle);
     }
 
     // 角度の中央値（-180/180 をまたいでも崩れないよう、最初の値からの差で並べる）

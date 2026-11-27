@@ -85,6 +85,11 @@ public class Exp2bTrialManager : MonoBehaviour
     [Tooltip("保存先。この中に被験者ごとのフォルダ（P01〜P08）を作る。Setting/exp2b.txt の dataDir が優先。" +
              "フォルダを作れない（D ドライブが無いなど）ときは exe の横の Log/Exp2b に保存する")]
     public string dataDir = @"D:\work\M1_Experiment\BasicInteraction_Experiment\Log\2-b";
+    [Tooltip("Unity の編集画面で再生したときは、本番のフォルダ（dataDir）ではなく、下の試し用フォルダに保存する" +
+             "（本番の被験者フォルダに試しの走行・評定・種が混ざらないように）。ビルドした exe には関係ない")]
+    public bool editorSavesToTestFolder = true;
+    [Tooltip("編集画面で再生したときの保存先（プロジェクト直下からの場所）")]
+    public string editorTestDir = @"Log\2-b_editor_test";
     [Tooltip("確認用：実際に保存しているフォルダ")]
     [SerializeField] string savingTo = "";
 
@@ -736,7 +741,16 @@ public class Exp2bTrialManager : MonoBehaviour
     void OpenLog()
     {
         string sub = string.Format("P{0:D2}", participant);
-        string dir = Path.Combine(dataDir, sub);
+        string root = dataDir;
+#if UNITY_EDITOR
+        if (editorSavesToTestFolder)
+        {
+            root = Path.GetFullPath(Path.Combine(Application.dataPath, "..", editorTestDir));
+            Debug.LogWarning("[Exp2b] 編集画面での再生なので、試し用のフォルダに保存します: " + root +
+                             "（本番の " + dataDir + " には書きません）");
+        }
+#endif
+        string dir = Path.Combine(root, sub);
         try
         {
             Directory.CreateDirectory(dir);
