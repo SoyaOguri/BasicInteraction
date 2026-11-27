@@ -1802,6 +1802,8 @@ MonoBehaviour:
   hudMargin: 40
   minBikeSpeedForEta: 1
   dataDir: D:\work\M1_Experiment\BasicInteraction_Experiment\Log\2-b
+  editorSavesToTestFolder: 1
+  editorTestDir: Log\2-b_editor_test
   savingTo: 
   configFileName: exp2b.txt
   loadedConfig: 
@@ -19276,6 +19278,7 @@ MonoBehaviour:
   zeroKey: 122
   showWarning: 1
   warnAfterSeconds: 1
+  warnFontSize: 18
   yawZero: 0
   yawRaw: 0
   zeroState: 
