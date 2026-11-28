@@ -21,6 +21,22 @@ public class Exp2bLayoutReceiver : MonoBehaviour
     [Tooltip("左右のビルドで隠すローカルの車。空ならシーン中の CarControllManagement をすべて隠す")]
     public CarControllManagement[] localCarsToHide;
 
+    [Header("ボタンの回数の表示（Setting/exp2b_side.txt の showButtonCount = 1 のビルドだけ）")]
+    [Tooltip("このビルドの Setting フォルダの中のこのファイルを読む（右の画面の exe のフォルダにだけ置く）")]
+    public string sideConfigFileName = "exp2b_side.txt";
+    public bool showButtonCount = false;
+    [Tooltip("文字の大きさ（画面の高さ 1080 px のとき）")]
+    public int buttonFontSize = 18;
+    [Tooltip("出す画面の番号（1 始まり。この exe がつないでいる何番目の画面か）。showDisplayNumbers = 1 にすると各画面に番号が出るので、それで確かめる")]
+    public int buttonDisplay = 2;
+    [Tooltip("画面の中の位置（0〜1）。x：0 = 左端、1 = 右端。y：0 = 下端、1 = 上端")]
+    public float buttonPosX = 0.97f;
+    public float buttonPosY = 0.25f;
+    [Tooltip("この回数を超えたらオレンジ（0〜この回数は白）")]
+    public int expectedPresses = 2;
+    [Tooltip("確認用：つないでいる各画面の真ん中に「画面 1」「画面 2」… を大きく出す（どれが何番か確かめるとき）")]
+    public bool showDisplayNumbers = false;
+
     [Header("確認用（読み取り専用）")]
     [SerializeField] string lastId = "（まだ受信していない）";
     [SerializeField] int lastSeq = -1;
@@ -30,7 +46,10 @@ public class Exp2bLayoutReceiver : MonoBehaviour
     Thread thread;
     volatile bool running;
     readonly object gate = new object();
-    string pending;
+    string pending, pendingButton;
+    string buttonTrial = "";
+    int buttonCount = -1;
+    UnityEngine.UI.Text buttonText;
     float lastPacketTime = -1f;
     string lastMessage;
 
@@ -43,6 +62,7 @@ public class Exp2bLayoutReceiver : MonoBehaviour
             enabled = false;
             return;
         }
+        LoadSideConfig();
         try
         {
             udp = new UdpClient();
@@ -76,6 +96,7 @@ public class Exp2bLayoutReceiver : MonoBehaviour
             {
                 byte[] data = udp.Receive(ref ep);
                 string s = System.Text.Encoding.UTF8.GetString(data);
+                if (s.StartsWith(Exp2bButtonMessage.Header)) { lock (gate) { pendingButton = s; } continue; }
                 if (!s.StartsWith(Exp2bLayoutMessage.Header)) continue;
                 lock (gate) { pending = s; }
             }
@@ -86,8 +107,17 @@ public class Exp2bLayoutReceiver : MonoBehaviour
 
     void Update()
     {
-        string s = null;
-        lock (gate) { if (pending != null) { s = pending; pending = null; } }
+        string s = null, sb = null;
+        lock (gate)
+        {
+            if (pending != null) { s = pending; pending = null; }
+            if (pendingButton != null) { sb = pendingButton; pendingButton = null; }
+        }
+        if (sb != null)
+        {
+            string trial; int count;
+            if (Exp2bButtonMessage.TryParse(sb, out trial, out count)) { buttonTrial = trial; buttonCount = count; }
+        }
         if (s != null)
         {
             lastPacketTime = Time.time;
@@ -110,6 +140,91 @@ public class Exp2bLayoutReceiver : MonoBehaviour
         secondsSinceLastPacket = lastPacketTime < 0f ? -1f : Time.time - lastPacketTime;
     }
 
+    // Setting/exp2b_side.txt（このビルドの exe の横の Setting フォルダ）。例）
+    //   showButtonCount = 1        # 1 = ボタンの回数を小さく出す（右の画面の exe にだけ置く）
+    //   buttonFontSize = 18
+    //   buttonCorner = BottomRight
+    void LoadSideConfig()
+    {
+        string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "..", "Setting", sideConfigFileName));
+        if (!System.IO.File.Exists(path)) return;
+        foreach (string raw in System.IO.File.ReadAllLines(path))
+        {
+            string line = raw;
+            int hash = line.IndexOf('#');
+            if (hash >= 0) line = line.Substring(0, hash);
+            int eq = line.IndexOf('=');
+            if (eq < 0) continue;
+            string key = line.Substring(0, eq).Trim().ToLowerInvariant(), val = line.Substring(eq + 1).Trim();
+            try
+            {
+                switch (key)
+                {
+                    case "showbuttoncount": showButtonCount = val == "1" || val.ToLowerInvariant() == "true"; break;
+                    case "buttonfontsize": buttonFontSize = int.Parse(val, CultureInfo.InvariantCulture); break;
+                    case "buttondisplay": buttonDisplay = int.Parse(val, CultureInfo.InvariantCulture); break;
+                    case "buttonposx": buttonPosX = float.Parse(val, CultureInfo.InvariantCulture); break;
+                    case "buttonposy": buttonPosY = float.Parse(val, CultureInfo.InvariantCulture); break;
+                    case "showdisplaynumbers": showDisplayNumbers = val == "1" || val.ToLowerInvariant() == "true"; break;
+                    case "expectedpresses": expectedPresses = int.Parse(val, CultureInfo.InvariantCulture); break;
+                }
+            }
+            catch (Exception e) { Debug.LogWarning("[Exp2bLayoutReceiver] 設定の行を読めませんでした: " + raw + " (" + e.Message + ")"); }
+        }
+        Debug.Log("[Exp2bLayoutReceiver] 設定を読みました: " + path + "（ボタンの回数の表示 " + (showButtonCount ? "画面 " + buttonDisplay : "なし") + "）");
+        if (showButtonCount) buttonText = MakeText(buttonDisplay - 1, buttonFontSize, new Vector2(buttonPosX, buttonPosY), new Vector2(1f, 0.5f));
+        if (showDisplayNumbers)
+            for (int i = 0; i < Display.displays.Length; i++)
+            {
+                var t = MakeText(i, 160, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+                if (t != null) t.text = "画面 " + (i + 1);
+            }
+    }
+
+    // 指定した画面（0 始まり）に文字を 1 つ作る。anchor：画面の中の位置（0〜1）、pivot：文字のどこをそこに合わせるか
+    UnityEngine.UI.Text MakeText(int display, int size, Vector2 anchor, Vector2 pivot)
+    {
+        if (display < 0 || display > 7) return null;
+        var cgo = new GameObject("Exp2bSideText_Display" + (display + 1));
+        DontDestroyOnLoad(cgo);
+        var canvas = cgo.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.targetDisplay = display;
+        canvas.sortingOrder = 900;
+        var scaler = cgo.AddComponent<UnityEngine.UI.CanvasScaler>();
+        scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.matchWidthOrHeight = 1f;
+        var go = new GameObject("Text", typeof(RectTransform));
+        go.transform.SetParent(cgo.transform, false);
+        var t = go.AddComponent<UnityEngine.UI.Text>();
+        var any = FindObjectOfType<UnityEngine.UI.Text>();
+        t.font = any != null && any != t && any.font != null ? any.font : Resources.GetBuiltinResource<Font>("Arial.ttf");
+        t.fontSize = size;
+        t.color = Color.white;
+        t.alignment = TextAnchor.MiddleCenter;
+        t.horizontalOverflow = HorizontalWrapMode.Overflow;
+        t.verticalOverflow = VerticalWrapMode.Overflow;
+        var o = go.AddComponent<UnityEngine.UI.Outline>();
+        o.effectColor = new Color(0f, 0f, 0f, 0.85f);
+        var rt = (RectTransform)go.transform;
+        rt.anchorMin = rt.anchorMax = anchor;
+        rt.pivot = pivot;
+        rt.sizeDelta = new Vector2(size * 8f, size * 1.6f);
+        rt.anchoredPosition = Vector2.zero;
+        t.alignment = pivot.x > 0.75f ? TextAnchor.MiddleRight : pivot.x < 0.25f ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
+        t.text = "";
+        return t;
+    }
+
+    // ボタンの回数を小さく出す（実験者が見る用）：まだ押していなければ「ボタン 0」、1 回で「ボタン 1」、2 回で「ボタン 2」
+    void LateUpdate()
+    {
+        if (buttonText == null) return;
+        buttonText.text = buttonCount < 0 ? "" : "ボタン " + buttonCount;
+        buttonText.color = buttonCount > expectedPresses ? new Color(1f, 0.6f, 0.1f) : Color.white;
+    }
+
     void HideLocalCars()
     {
         // 左右では ServerCommunicator を無効にするので、見える車は正面から届く ModelBank の車だけになる。
@@ -119,6 +234,28 @@ public class Exp2bLayoutReceiver : MonoBehaviour
             ? localCarsToHide
             : FindObjectsOfType<CarControllManagement>();
         foreach (var car in cars) if (car != null) car.SendToUnderground();
+    }
+}
+
+// 正面 → 左右で送る、ボタンの回数のメッセージ
+//   EXP2BBTN|通し番号|試行の表示（例：セット2 14 / 28 試行目）|回数
+public static class Exp2bButtonMessage
+{
+    public const string Header = "EXP2BBTN|";
+
+    public static string Build(int seq, string trial, int count)
+    {
+        return "EXP2BBTN|" + seq.ToString(CultureInfo.InvariantCulture) + "|" + (trial ?? "").Replace("|", " ") + "|" +
+               count.ToString(CultureInfo.InvariantCulture);
+    }
+
+    public static bool TryParse(string s, out string trial, out int count)
+    {
+        trial = ""; count = -1;
+        string[] v = s.Trim().Split('|');
+        if (v.Length < 4 || v[0] != "EXP2BBTN") return false;
+        trial = v[2];
+        return int.TryParse(v[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out count);
     }
 }
 

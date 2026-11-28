@@ -2,9 +2,11 @@ using System.Collections.Generic;
 
 // 実験2-b（学習用・第1段階）の試行の並び
 //
-// ■ 1 セット = 練習 3 ＋ 学習用 24 条件 ＋ 車ありダミー 4（右から 2・左から 2）＝ 31 試行
-//   ・練習 3 試行：24 条件からランダムに 3 つ（互いに重ならない・最初の本番の試行とも違う）。
-//     そのうち 1 回だけ車が出る（2・3 試行目のどちらか、左右はランダム）。2 試行目以降にするのは、1 試行目で自転車に慣れてもらうため
+// ■ 1 セット = 練習 ＋ 学習用 24 条件 ＋ 車ありダミー 4（右から 2・左から 2）
+//   ・練習の回数はセットごとに決める（PracticeCounts。既定はセット1 = 10、セット2・3 = 1。Setting/exp2b.txt の practiceCounts で変えられる）
+//   ・練習：24 条件からランダムに選ぶ（互いに重ならない・最初の本番の試行とも違う）。
+//     練習が 2 回以上なら、そのうち 1 回だけ車が出る（2 試行目以降のどれか、左右はランダム）。2 試行目以降にするのは、1 試行目で自転車に慣れてもらうため。
+//     練習が 1 回なら車は出さない
 //   ・ダミー：24 条件のどれかと同じレイアウトに、車を 1 台出すだけ（ミラーには勝手に映る）。
 //     24 試行の間のランダムな位置に入れる（起動のたびに変わる）。ダミーどうしは連続せず、本番の最初の試行にもならない。
 //     ダミーのレイアウトは、直前・直後の試行と同じにならないようにする
@@ -26,7 +28,10 @@ public static class Exp2bSchedule
     public const int Participants = 8;
     public const int Sets = 3;
     public const int DummiesPerSet = 4;
-    public const int PracticePerSet = 3;
+    // 練習の回数（セット1, セット2, セット3）。Exp2bTrialManager が Setting/exp2b.txt の practiceCounts で上書きする
+    public static int[] PracticeCounts = { 10, 1, 1 };
+    public static int PracticeCount(int set) { return PracticeCounts[Clamp(set, 1, 3) - 1]; }
+    static int Clamp(int v, int lo, int hi) { return v < lo ? lo : v > hi ? hi : v; }
     public const int Seed = 20261111;
 
     // 独立の練習フェーズ：（レイアウト番号, 車）
@@ -66,8 +71,10 @@ public static class Exp2bSchedule
     }
 
     // randomSeed：練習とダミーの乱数の種（起動のたびに Exp2bTrialManager が決める）
-    public static List<TrialCondition> MainSet(int participant, int set, Exp2bBaseOrder orderType, int randomSeed)
+    // practiceCount：練習の回数（負なら PracticeCount(set)）。前に走ったセットを作り直すときは、そのとき走った回数を渡す
+    public static List<TrialCondition> MainSet(int participant, int set, Exp2bBaseOrder orderType, int randomSeed, int practiceCount = -1)
     {
+        int nPractice = practiceCount >= 0 ? practiceCount : PracticeCount(set);
         int n = TrialCondition.FactorialCount;
         int[] baseOrder = BaseOrder(orderType);
         int off = StartOffset(participant, set);
@@ -76,14 +83,21 @@ public static class Exp2bSchedule
 
         var rng = new System.Random(randomSeed);
 
-        // ---- 練習 3 試行 ----
+        // ---- 練習 ----
+        // （練習 3 回のときは、これまでと同じ乱数の使い方なので、同じ種なら同じ並びになる）
         var pPool = new List<int>();
         for (int k = 1; k <= n; k++) if (k != mains[0]) pPool.Add(k);
         Shuffle(pPool, rng);
-        int carAt = rng.Next(1, PracticePerSet);                       // 2・3 試行目のどちらか（0 始まりで 1〜2）
-        CarSpawn pSide = rng.Next(2) == 0 ? CarSpawn.Left : CarSpawn.Right;
+        if (nPractice > pPool.Count) nPractice = pPool.Count;
+        int carAt = -1;
+        CarSpawn pSide = CarSpawn.None;
+        if (nPractice >= 2)
+        {
+            carAt = rng.Next(1, nPractice);                            // 2 試行目以降のどれか（0 始まりで 1〜nPractice-1）
+            pSide = rng.Next(2) == 0 ? CarSpawn.Left : CarSpawn.Right;
+        }
         var list = new List<TrialCondition>();
-        for (int i = 0; i < PracticePerSet; i++)
+        for (int i = 0; i < nPractice; i++)
         {
             var c = TrialCondition.Factorial(pPool[i]);
             c.kind = TrialKind.Practice;
@@ -135,14 +149,14 @@ public static class Exp2bSchedule
         return list;
     }
 
-    public static List<TrialCondition> Phase(Exp2bPhase phase, int participant, Exp2bBaseOrder orderType, int randomSeed)
+    public static List<TrialCondition> Phase(Exp2bPhase phase, int participant, Exp2bBaseOrder orderType, int randomSeed, int practiceCount = -1)
     {
         switch (phase)
         {
             case Exp2bPhase.Practice: return Practice();
-            case Exp2bPhase.Set1: return MainSet(participant, 1, orderType, randomSeed);
-            case Exp2bPhase.Set2: return MainSet(participant, 2, orderType, randomSeed);
-            default: return MainSet(participant, 3, orderType, randomSeed);
+            case Exp2bPhase.Set1: return MainSet(participant, 1, orderType, randomSeed, practiceCount);
+            case Exp2bPhase.Set2: return MainSet(participant, 2, orderType, randomSeed, practiceCount);
+            default: return MainSet(participant, 3, orderType, randomSeed, practiceCount);
         }
     }
 

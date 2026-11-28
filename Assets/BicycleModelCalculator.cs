@@ -43,13 +43,27 @@ public class BicycleModelCalculator : MonoBehaviour
     bool straightLock;
     float lockX, lockY, lockYaw;
 
+    // 走り出しの自動の速さ（Exp2bTrialManager がカウントダウンの終わりに StartAutoSpeed で始める）
+    //   決めた秒数のあいだ、速さを「こいだ速さ」と「決めた速さ」の大きいほうにする（止まった状態から走り出さないように）
+    float autoSpeed, autoSpeedUntil = -1f;
+    public bool AutoSpeedActive { get { return Time.time < autoSpeedUntil; } }
+
+    public void StartAutoSpeed(float speed, float seconds)
+    {
+        autoSpeed = speed;
+        autoSpeedUntil = speed > 0f && seconds > 0f ? Time.time + seconds : -1f;
+    }
+
     [Tooltip("まっすぐ進ませている間（走り出しの straightStartDistance m）の左右の傾きの平均を、まっすぐ区間が終わるときに 0 にする" +
              "（試行ごと。ハンドルの 0 は変えない）。起動したときの状態や、乗った人の座り方で傾きの 0 がずれ、" +
              "まっすぐ区間のあとにずっと左右に曲がってしまうのを防ぐ")]
     public bool zeroRollWhileStraight = true;
     [Tooltip("走り出してから何 m 進んだところから傾きを集めるか（こぎ出しの揺れを外す）")]
     public float rollZeroFromDistance = 3f;
-    double rollSumR, rollSumL;
+    [Tooltip("同じまっすぐ区間のハンドルの平均を、ハンドルの 0 にする（試行ごと）。起動時に合わせたハンドルの 0 がずれていて、" +
+             "まっすぐ区間のあとに左右へ流れていくのを防ぐ（まっすぐ区間ではハンドルを切っても曲がらないので、乗った人は前を向いてまっすぐ持っている）")]
+    public bool zeroSteerWhileStraight = true;
+    double rollSumR, rollSumL, steerSum;
     int rollSamples;
     [Header("----------------------")]
     public float SelfSteerTerm = 0.0f;
@@ -228,13 +242,20 @@ public class BicycleModelCalculator : MonoBehaviour
         lockX = x;
         lockY = y;
         lockYaw = yaw;
-        rollSumR = rollSumL = 0;
+        rollSumR = rollSumL = steerSum = 0;
         rollSamples = 0;
     }
 
     // まっすぐ区間の終わりに、その間の傾きの平均を 0 にする
     void FinishStraightRollZero()
     {
+        if (zeroSteerWhileStraight && rollSamples >= 100)
+        {
+            float st = (float)(steerSum / rollSamples);
+            float beforeSteer = (st - steerOfset) * -steerCoefficient;
+            steerOfset = st;
+            Debug.Log(string.Format("[Bicycle] まっすぐ区間でハンドルの 0 を合わせ直し（ずれ {0:F4} rad）：ハンドル → {1}", beforeSteer, st));
+        }
         if (!zeroRollWhileStraight) return;
         if (rollSamples < 100)
         {
@@ -264,6 +285,7 @@ public class BicycleModelCalculator : MonoBehaviour
         {
             rollSumR += leanRightData;
             rollSumL += leanLeftData;
+            steerSum += steerData;
             rollSamples++;
         }
         if (d2 >= straightStartDistance * straightStartDistance)
@@ -382,6 +404,7 @@ public class BicycleModelCalculator : MonoBehaviour
         yawRate = 0;
         slipAngle = 0;
         steerDot = 0;
+        autoSpeedUntil = -1f;
         BeginStraightStart();
     }
 
@@ -453,6 +476,8 @@ public class BicycleModelCalculator : MonoBehaviour
             {
                 velCount = 0;
             }
+            // 走り出しの自動の速さ（こいだ速さのほうが速ければ、そちら）
+            if (AutoSpeedActive && velocity < autoSpeed) velocity = autoSpeed;
 
             //velocity = (driveData - lastDriveData) / Time.deltaTime * 2 * (float)System.Math.PI * tireRadius;
             //lastDriveData = driveData;

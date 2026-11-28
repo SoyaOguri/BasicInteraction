@@ -18,6 +18,9 @@ public class GoalLine : MonoBehaviour
 
     private float initialTimeLimit;
 
+    // 実験2-b：true のときは、自転車が動き出してもタイマーを始めない（StartTimerNow で始める。カウントダウン用）
+    [HideInInspector] public bool waitForStartSignal = false;
+
     void Awake()
     {
         initialTimeLimit = timeLimit;
@@ -44,7 +47,7 @@ public class GoalLine : MonoBehaviour
         // --- 1. 発進判定 ---
         if (!isTimerStarted)
         {
-            if (mainCalc != null && mainCalc.velocity > startThreshold)
+            if (!waitForStartSignal && mainCalc != null && mainCalc.velocity > startThreshold)
             {
                 isTimerStarted = true;
             }
@@ -103,6 +106,13 @@ public class GoalLine : MonoBehaviour
         initialTimeLimit = seconds;
         timeLimit = seconds;
         if (timerText != null) UpdateTimerDisplay();
+    }
+
+    // 実験2-b：カウントダウンが 0 になった瞬間に、制限時間のタイマーを始める
+    public void StartTimerNow()
+    {
+        waitForStartSignal = false;
+        if (!isGoalReached) isTimerStarted = true;
     }
 
     // ★追加：外部（TrialManager）からタイマーをリセットするための関数

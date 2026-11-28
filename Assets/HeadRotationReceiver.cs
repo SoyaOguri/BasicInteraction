@@ -94,11 +94,13 @@ public class HeadRotationReceiver : MonoBehaviour
     private float lastReceiveTime = -1f;   // 最後に届いた時刻（-1 = 起動してから一度も届いていない）
     private GUIStyle warnStyle;
     private Texture2D warnBg;
+    private bool sideBuild;   // 左右の画面の exe では警告を出さない（iPhone は正面の PC にしか届かない）
 
     void Start()
     {
         // 古い既定値の Z がシーンに保存されていても、自転車のセンサのオフセット（Z）とぶつからないよう H に直す
         if (zeroKey == KeyCode.Z) zeroKey = KeyCode.H;
+        sideBuild = Exp2bRole.IsSideBuild();
         try
         {
             udpClient = new UdpClient(port);
@@ -214,7 +216,7 @@ public class HeadRotationReceiver : MonoBehaviour
     // 警告：画面の上の真ん中に赤い帯で出す（実験者が気づけるように。届けば自動で消える）
     void OnGUI()
     {
-        if (!showWarning || !Lost) return;
+        if (!showWarning || !Lost || sideBuild) return;
         if (warnStyle == null)
         {
             warnBg = new Texture2D(1, 1);

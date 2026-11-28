@@ -170,6 +170,7 @@ MonoBehaviour:
   mainBicycle: {fileID: 1739904108}
   startThreshold: 0.3
   isSuccess: 0
+  waitForStartSignal: 0
 --- !u!65 &1827726
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1784,6 +1785,14 @@ MonoBehaviour:
   headTracker: {fileID: 0}
   ratePhases: Practice,Set1
   rateCarTrials: 0
+  timingPhases: Set1,Set2,Set3
+  timingCarTrials: 1
+  countdownSeconds: 3
+  autoStartSeconds: 3
+  autoStartSpeed: 3
+  startBack: 10
+  firstStartKey: 270
+  countdownFontSize: 240
   ratingPanel: {fileID: 0}
   participant: 1
   phase: 0
@@ -1793,6 +1802,11 @@ MonoBehaviour:
   usedSeed: 0
   carLeadSeconds: 1
   carSafeDistance: -1
+  sendButtonCount: 1
+  buttonDebounceSeconds: 0.5
+  ignoreButtonInCountdown: 1
+  carsAvoidStoppingInIntersection: 1
+  crossingMargin: 0.5
   collisionMonitor: {fileID: 0}
   timeLimit: 25
   progressText: {fileID: 0}
@@ -1800,6 +1814,7 @@ MonoBehaviour:
   timerFontSize: 60
   progressFontSize: 40
   hudMargin: 40
+  hudBottom: 160
   minBikeSpeedForEta: 1
   dataDir: D:\work\M1_Experiment\BasicInteraction_Experiment\Log\2-b
   editorSavesToTestFolder: 1
@@ -8329,6 +8344,10 @@ MonoBehaviour:
   mainBicycle: {fileID: 1739904108}
   safeDistance: 4
   brakeDeceleration: 3
+  useCrossingZone: 0
+  crossingMinZ: 0
+  crossingMaxZ: 0
+  crossingState: 
   minPitch: 0.8
   maxPitch: 2
   maxSpeedForSound: 20
@@ -9936,6 +9955,10 @@ MonoBehaviour:
   mainBicycle: {fileID: 1739904108}
   safeDistance: 4
   brakeDeceleration: 3
+  useCrossingZone: 0
+  crossingMinZ: 0
+  crossingMaxZ: 0
+  crossingState: 
   minPitch: 0.8
   maxPitch: 2
   maxSpeedForSound: 20
@@ -13708,6 +13731,14 @@ MonoBehaviour:
   layout: {fileID: 1607293145}
   port: 30101
   localCarsToHide: []
+  sideConfigFileName: exp2b_side.txt
+  showButtonCount: 0
+  buttonFontSize: 18
+  buttonDisplay: 2
+  buttonPosX: 0.97
+  buttonPosY: 0.25
+  expectedPresses: 2
+  showDisplayNumbers: 0
   lastId: "\uFF08\u307E\u3060\u53D7\u4FE1\u3057\u3066\u3044\u306A\u3044\uFF09"
   lastSeq: -1
   secondsSinceLastPacket: -1
@@ -14425,6 +14456,7 @@ MonoBehaviour:
   straightStartDistance: 10
   zeroRollWhileStraight: 1
   rollZeroFromDistance: 3
+  zeroSteerWhileStraight: 1
   SelfSteerTerm: 0
   rnd1: 0
   rnd2: 0

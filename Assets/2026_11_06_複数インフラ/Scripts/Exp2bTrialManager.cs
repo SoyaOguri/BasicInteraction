@@ -36,6 +36,27 @@ public class Exp2bTrialManager : MonoBehaviour
     public string ratePhases = "Practice,Set1";
     [Tooltip("車が出る試行（ダミー・練習の車あり）でも評定を出すか")]
     public bool rateCarTrials = false;
+    [Tooltip("ボタンを押したタイミングの問い（btnTiming）を出すフェーズ（「,」区切り）。Setting/exp2b.txt の timingPhases が優先")]
+    public string timingPhases = "Set1,Set2,Set3";
+    [Tooltip("車が出る試行でも、ボタンのタイミングの問いを出すか")]
+    public bool timingCarTrials = true;
+
+    [Header("試行の始まりのカウントダウン（3, 2, 1 → スタート）")]
+    [Tooltip("カウントダウンの秒数。0 で使わない（そのときは今までどおり、自転車が動き出したら制限時間のタイマーが始まる）。" +
+             "使うときは、カウントダウンの間は自転車をスタート位置に止めておき、0 になった瞬間に制限時間のタイマーを始める。" +
+             "Setting/exp2b.txt の countdownSeconds が優先")]
+    public int countdownSeconds = 3;
+    [Tooltip("カウントダウンが 0 になってから何秒のあいだ、自転車を自動で走らせるか（0 で使わない）。" +
+             "そのあいだの速さは、こいだ速さと autoStartSpeed の大きいほう。Setting/exp2b.txt の autoStartSeconds が優先")]
+    public float autoStartSeconds = 3f;
+    [Tooltip("走り出しの自動の速さ [m/s]。Setting/exp2b.txt の autoStartSpeed が優先")]
+    public float autoStartSpeed = 3f;
+    [Tooltip("スタート位置を、シーンで決めた位置（自転車の Reset X）から何 m 後ろにするか。Setting/exp2b.txt の startBack が優先")]
+    public float startBack = 10f;
+    [Tooltip("起動して最初の試行だけは、実験者がこのキーを押してからカウントダウンを始める")]
+    public KeyCode firstStartKey = KeyCode.KeypadPlus;
+    [Tooltip("カウントダウンの数字の大きさ（画面の高さ 1080 px のとき）")]
+    public int countdownFontSize = 240;
     [Tooltip("空なら自動で付ける")]
     public Exp2bRatingPanel ratingPanel;
 
@@ -51,6 +72,7 @@ public class Exp2bTrialManager : MonoBehaviour
     public int randomSeed = 0;
     [Tooltip("確認用：この起動で使っている種")]
     [SerializeField] int usedSeed;
+    int resumePracticeCount = -1;   // 途中から再開するとき、前回の起動の練習の回数（-1 = 設定どおり）
 
     [Header("車ありの試行（ダミー・練習）")]
     [Tooltip("車が自転車より何秒早く交差点（自転車の進路との交点）に着くようにするか。0 = 同時。" +
@@ -59,6 +81,18 @@ public class Exp2bTrialManager : MonoBehaviour
     [Tooltip("車が自転車の何 m 手前でブレーキをかけて止まるか（CarControllManagement の Safe Distance）。" +
              "負の値なら車の Inspector の値のまま。Setting/exp2b.txt の carSafeDistance が優先")]
     public float carSafeDistance = -1f;
+
+    [Header("ボタン（判断用スイッチ）の回数")]
+    [Tooltip("試行ごとに押した回数を数え、左右の画面へ送る（右の画面のビルドが、設定に応じて小さく表示する）。summary の buttonPresses にも書く")]
+    public bool sendButtonCount = true;
+    [Tooltip("前に数えたボタンからこの秒数以内にもう一度押されたら、数えない（指が弾んで 2 回押した、を 1 回にする）")]
+    public float buttonDebounceSeconds = 0.5f;
+    [Tooltip("カウントダウンの間（自転車がまだ動けないとき）に押されたボタンは数えない")]
+    public bool ignoreButtonInCountdown = true;
+    [Tooltip("車が交差点（自転車の走る道路）の中で止まらないようにする：交差点の手前で止まれなければ、そのまま通り抜ける")]
+    public bool carsAvoidStoppingInIntersection = true;
+    [Tooltip("自転車の走る道路の白線から、さらに何 m 外側までを「交差点」とみなすか")]
+    public float crossingMargin = 0.5f;
 
     [Header("衝突の判定（Exp2bCollisionMonitor。空なら自動で付ける）")]
     public Exp2bCollisionMonitor collisionMonitor;
@@ -78,6 +112,8 @@ public class Exp2bTrialManager : MonoBehaviour
     public int progressFontSize = 14;
     [Tooltip("画面の左端・下端からの余白 [px]（画面の高さ 1080 px のとき）")]
     public float hudMargin = 40f;
+    [Tooltip("画面の下端から、タイマーの下までの高さ [px]（画面の高さ 1080 px のとき）。Setting/exp2b.txt の hudBottom が優先")]
+    public float hudBottom = 160f;
     [Tooltip("自転車の到着時刻を予測するときの最低速度 [m/s]（止まっているときに予測が無限大にならないように）")]
     public float minBikeSpeedForEta = 1.0f;
 
@@ -124,6 +160,16 @@ public class Exp2bTrialManager : MonoBehaviour
     bool finished;
     bool trialLogged;
     int ratingEndedFrame = -1;   // 評定が終わったフレーム（同じテンキーの Enter で次の試行を終えないように）
+    int buttonPresses;          // この試行でボタンを押した回数（離した状態 → 押した状態 で 1 回。カウントダウン中・連続押しは数えない）
+    float lastButtonTime = -99f;
+    readonly List<string> buttonPressX = new List<string>();   // 数えたボタンの位置（交差点の中心からの前後距離 m）
+    // 判断用スイッチは、ふだん 1、押している間 0。起動直後はセンサの値がまだ届かず 0 なので、
+    // 一度 1（離した状態）を見るまでは数えない（でないと、起動した瞬間に「1 回押した」と数えてしまう）
+    bool switchWasOn = false;
+    enum Countdown { None, WaitKey, Counting, Go }
+    Countdown cd = Countdown.None;
+    float cdEnd, goHideAt;
+    Text countdownText;
     TimeCount timeCount;   // この試行を summary に書いたか（評定中に終了したとき二重に書かないように）
     CarControllManagement pendingCar;
     float trialStartTime;
@@ -160,11 +206,13 @@ public class Exp2bTrialManager : MonoBehaviour
         OpenSync();
         OpenLog();
         usedSeed = DecideSeed();
-        trials = Exp2bSchedule.Phase(phase, participant, baseOrder, usedSeed);
+        // 途中から再開するときは、前回と同じ練習の回数で作り直す（練習の回数を変えたあとでも並びがずれないように）
+        trials = Exp2bSchedule.Phase(phase, participant, baseOrder, usedSeed, resumePracticeCount);
         SaveSeed();
         BuildFullSequence();
         trialCount = trials.Count;
         if (goalLine != null) goalLine.SetTimeLimit(timeLimit);
+        ApplyStartBack();
         ApplyCarSafeDistance();
         SetupCollisionMonitor();
         SetupProgressText();
@@ -174,6 +222,8 @@ public class Exp2bTrialManager : MonoBehaviour
 
     void Update()
     {
+        UpdateCountdown();
+        UpdateButtonCount();
         // 評定の画面が出ている間は、Enter で次の試行に進まない（評定が終わると自動で次へ進む）
         bool rating = ratingPanel != null && ratingPanel.Active;
         // 試行を終えるキー：キーボードの Enter か、テンキーの Enter
@@ -192,14 +242,16 @@ public class Exp2bTrialManager : MonoBehaviour
                 if (bicycle != null) bicycle.ResetToStart();
                 if (timeCount != null) timeCount.ResetFlag();
             }
+            StopCountdown();
             EndTrial();
-            if (NeedsRating(trials[index]))
+            var askKeys = AskKeys(trials[index]);
+            if (askKeys.Count > 0)
             {
                 // この試行の時系列はここで閉じる（評定の間の走行は記録しない）
                 if (dataRecorder != null) dataRecorder.CloseFile();
                 HideCars();
                 pendingCar = null;   // 評定の間に車が発進しないように
-                StartRating();
+                StartRating(askKeys);
             }
             else
             {
@@ -207,7 +259,7 @@ public class Exp2bTrialManager : MonoBehaviour
             }
         }
         UpdateCarTiming();
-        if (udp != null && index >= 0 && Time.time >= nextResend) SendLayout();
+        if (udp != null && index >= 0 && Time.time >= nextResend) { SendLayout(); SendButtonCount(); }
     }
 
     void NextTrial()
@@ -229,20 +281,44 @@ public class Exp2bTrialManager : MonoBehaviour
 
     // ---------------- 走行後の評定（テンキー） ----------------
 
-    bool NeedsRating(TrialCondition c)
+    bool InPhases(string phases)
     {
-        if (string.IsNullOrEmpty(ratePhases)) return false;
-        if (!rateCarTrials && c.carSpawn != CarSpawn.None) return false;
-        foreach (string p in ratePhases.Split(','))
+        if (string.IsNullOrEmpty(phases)) return false;
+        foreach (string p in phases.Split(','))
             if (string.Equals(p.Trim(), phase.ToString(), System.StringComparison.OrdinalIgnoreCase)) return true;
         return false;
     }
 
-    void StartRating()
+    void EnsureRatingPanel()
     {
         if (ratingPanel == null) ratingPanel = GetComponent<Exp2bRatingPanel>();
         if (ratingPanel == null) ratingPanel = gameObject.AddComponent<Exp2bRatingPanel>();
         if (ratingPanel.font == null && goalLine != null && goalLine.timerText != null) ratingPanel.font = goalLine.timerText.font;
+        ratingPanel.EnsureItems();
+    }
+
+    // この試行のあとに聞く問いの列名
+    //  ・交差点の評定（btnTiming 以外）：ratePhases のセットで、車の出ない試行（rateCarTrials なら車ありも）
+    //  ・ボタンのタイミング（btnTiming）：timingPhases のセットで、車の出ない試行（timingCarTrials なら車ありも）
+    HashSet<string> AskKeys(TrialCondition c)
+    {
+        var keys = new HashSet<string>();
+        bool noCar = c.carSpawn == CarSpawn.None;
+        bool rate = InPhases(ratePhases) && (rateCarTrials || noCar);
+        bool timing = InPhases(timingPhases) && (timingCarTrials || noCar);
+        if (!rate && !timing) return keys;
+        EnsureRatingPanel();
+        foreach (var it in ratingPanel.Items)
+        {
+            bool isTiming = Exp2bRatingPanel.IsTimingKey(it[0]);
+            if (isTiming ? timing : rate) keys.Add(it[0]);
+        }
+        return keys;
+    }
+
+    void StartRating(HashSet<string> askKeys)
+    {
+        EnsureRatingPanel();
 
         var c = trials[index];
         int seen; bool prevCar;
@@ -254,9 +330,13 @@ public class Exp2bTrialManager : MonoBehaviour
             c.id, c.kind.ToString(), c.factorialNo.ToString(), c.ZValues(), c.carSpawn.ToString(), seen.ToString(),
         });
         string path = Path.Combine(savingTo, string.Format("P{0:D2}_ratings.csv", participant));
-        string title = PhaseLabel() + "　" + TrialLabel() + "　　いま走った交差点について、当てはまるものを選んでください";
+        bool onlyTiming = true;
+        foreach (string k in askKeys) if (!Exp2bRatingPanel.IsTimingKey(k)) onlyTiming = false;
+        string title = PhaseLabel() + "　" + TrialLabel() + (onlyTiming
+            ? "　　いま走った試行について、当てはまるものを選んでください"
+            : "　　いま走った交差点について、当てはまるものを選んでください");
         if (progressText != null) progressText.text = "評定中";
-        ratingPanel.Begin(path, header, values, title, () =>
+        ratingPanel.Begin(path, header, values, title, askKeys, () =>
         {
             // 評定の間に自転車が動いていても、初期位置から始める
             if (bicycle != null) bicycle.ResetToStart();
@@ -314,6 +394,21 @@ public class Exp2bTrialManager : MonoBehaviour
                     case "timerfontsize": timerFontSize = int.Parse(val, f); break;
                     case "progressfontsize": progressFontSize = int.Parse(val, f); break;
                     case "ratecartrials": rateCarTrials = val == "1" || val.ToLowerInvariant() == "true"; break;
+                    case "timingphases": timingPhases = val; break;
+                    case "timingcartrials": timingCarTrials = val == "1" || val.ToLowerInvariant() == "true"; break;
+                    case "countdownseconds": countdownSeconds = int.Parse(val, f); break;
+                    case "autostartseconds": autoStartSeconds = float.Parse(val, f); break;
+                    case "autostartspeed": autoStartSpeed = float.Parse(val, f); break;
+                    case "startback": startBack = float.Parse(val, f); break;
+                    case "hudbottom": hudBottom = float.Parse(val, f); break;
+                    case "practicecounts":
+                        {
+                            var parts = val.Split(',');
+                            var counts = (int[])Exp2bSchedule.PracticeCounts.Clone();
+                            for (int k = 0; k < parts.Length && k < 3; k++) counts[k] = Mathf.Max(0, int.Parse(parts[k].Trim(), f));
+                            Exp2bSchedule.PracticeCounts = counts;
+                            break;
+                        }
                 }
             }
             catch (System.Exception e)
@@ -359,6 +454,45 @@ public class Exp2bTrialManager : MonoBehaviour
         }
     }
 
+    // ボタンの回数を左右へ送る（右の画面のビルドが小さく表示する）
+    void SendButtonCount()
+    {
+        if (!sendButtonCount || udp == null || index < 0) return;
+        try
+        {
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(Exp2bButtonMessage.Build(syncSeq, PhaseLabel() + " " + TrialLabel(), buttonPresses));
+            udp.Send(b, b.Length, syncEndPoint);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("[Exp2b] ボタンの回数の送信に失敗: " + e.Message);
+        }
+    }
+
+    void UpdateButtonCount()
+    {
+        if (bicycle == null || index < 0) return;
+        bool on = bicycle.judgeSwitchData > 0.5f;
+        if (switchWasOn && !on)
+        {
+            bool inCountdown = cd == Countdown.WaitKey || cd == Countdown.Counting;
+            if (ignoreButtonInCountdown && inCountdown)
+                Debug.Log("[Exp2b] カウントダウン中のボタンなので数えません");
+            else if (Time.time - lastButtonTime < buttonDebounceSeconds)
+                Debug.Log(string.Format("[Exp2b] 前のボタンから {0:F2} s しかたっていないので数えません（連続押し）", Time.time - lastButtonTime));
+            else
+            {
+                buttonPresses++;
+                lastButtonTime = Time.time;
+                // 解析と同じ「自転車の x − 1350（交差点の中心）」。手前がマイナス
+                buttonPressX.Add((bicycle.transform.position.x - 1350f).ToString("F1", CultureInfo.InvariantCulture));
+                Debug.Log(string.Format("[Exp2b] ボタン {0} 回目（試行開始から {1:F1} s）", buttonPresses, Time.time - trialStartTime));
+                SendButtonCount();
+            }
+        }
+        switchWasOn = on;
+    }
+
     void OnDestroy()
     {
         if (udp != null) { udp.Close(); udp = null; }
@@ -382,13 +516,28 @@ public class Exp2bTrialManager : MonoBehaviour
         carLaunchTime = -1f;
         trialStartTime = Time.time;
         trialLogged = false;
+        buttonPresses = 0;
+        lastButtonTime = -99f;
+        buttonPressX.Clear();
         trialStartClock = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
         if (!first && goalLine != null) goalLine.ResetGoal();
         if (collisionMonitor != null) collisionMonitor.ResetTrial();
-        // 首振りの左右の 0 を、この試行の走り出しの向きで合わせ直す
-        if (headTracker != null) headTracker.BeginAutoZero(() => bicycle != null ? bicycle.velocity : float.MaxValue);
         OpenTrialData(c);
+        if (countdownSeconds > 0)
+        {
+            // カウントダウンが 0 になるまで、自転車はスタート位置に止め、制限時間のタイマーも動かさない
+            if (goalLine != null) goalLine.waitForStartSignal = true;
+            cd = first ? Countdown.WaitKey : Countdown.Counting;
+            cdEnd = Time.time + countdownSeconds;
+            ShowCountdownText();
+        }
+        else
+        {
+            if (goalLine != null) goalLine.waitForStartSignal = false;
+            // 首振りの左右の 0 を、この試行の走り出しの向きで合わせ直す
+            if (headTracker != null) headTracker.BeginAutoZero(() => bicycle != null ? bicycle.velocity : float.MaxValue);
+        }
         if (progressText != null)
             progressText.text = PhaseLabel() + "　" + TrialLabel();
         Debug.Log(string.Format("[Exp2b] {0} {1}/{2}: {3}", phase, trialNumber, trials.Count, c));
@@ -422,6 +571,8 @@ public class Exp2bTrialManager : MonoBehaviour
             (Time.time - trialStartTime).ToString("F2", f),
             trialStartClock, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
             Quote(dataFile),
+            buttonPresses.ToString(),
+            string.Join(" ", buttonPressX.ToArray()),
         }));
         log.Flush();
     }
@@ -482,12 +633,130 @@ public class Exp2bTrialManager : MonoBehaviour
             c.carSpawn == CarSpawn.Left ? "CarL" : c.carSpawn == CarSpawn.Right ? "CarR" : "NoCar");
 
         dataRecorder.StartTrialFile(savingTo, name, header, values,
-            "carLaunched,timeLeft,collision,carGap,headYawRaw,headYawZero,headReceiving",
+            "carLaunched,timeLeft,collision,carGap,headYawRaw,headYawZero,headReceiving,countdown,autoSpeed",
             () => (carLaunched ? "1" : "0") + "," +
                   (goalLine != null ? goalLine.timeLimit.ToString("F2", CultureInfo.InvariantCulture) : "") + "," +
                   CollisionFlag() + "," +
                   (collisionMonitor != null ? Meters(collisionMonitor.CurrentGap) : "") + "," +
-                  HeadColumns());
+                  HeadColumns() + "," +
+                  // countdown：1 = カウントダウン中（または最初の試行の開始待ち）。0 になった行から制限時間のタイマーが動く
+                  (cd == Countdown.WaitKey || cd == Countdown.Counting ? "1" : "0") + "," +
+                  // autoSpeed：1 = 走り出しの自動の速さで走っている（velocity は自動の速さとこいだ速さの大きいほう）
+                  (bicycle != null && bicycle.AutoSpeedActive ? "1" : "0"));
+    }
+
+    // スタート位置を後ろにずらす（自転車は x の + 向きに走るので、x を減らす）
+    void ApplyStartBack()
+    {
+        if (bicycle == null || Mathf.Approximately(startBack, 0f)) return;
+        float yaw = bicycle.resetYaw * Mathf.Deg2Rad;
+        bicycle.resetX -= startBack * Mathf.Cos(yaw);
+        bicycle.resetY -= startBack * Mathf.Sin(yaw);
+        bicycle.ResetToStart();
+        Debug.Log(string.Format("[Exp2b] スタート位置を {0} m 後ろにしました（x = {1}）", startBack, bicycle.resetX));
+    }
+
+    // ---------------- 試行の始まりのカウントダウン ----------------
+    //  評定が終わって次の試行に入ると「3, 2, 1」を出し、0 で「スタート」を出して制限時間のタイマーを始める。
+    //  その間、自転車はスタート位置に止めておく（こいでも進まない）。
+    //  起動して最初の試行だけは、実験者が firstStartKey（テンキーの +）を押してからカウントダウンを始める。
+
+    void UpdateCountdown()
+    {
+        switch (cd)
+        {
+            case Countdown.WaitKey:
+                HoldBicycle();
+                if (Input.GetKeyDown(firstStartKey))
+                {
+                    cd = Countdown.Counting;
+                    cdEnd = Time.time + countdownSeconds;
+                }
+                ShowCountdownText();
+                break;
+            case Countdown.Counting:
+                HoldBicycle();
+                if (Time.time >= cdEnd) ReleaseStart();
+                else ShowCountdownText();
+                break;
+            case Countdown.Go:
+                if (Time.time >= goHideAt) StopCountdown();
+                break;
+        }
+    }
+
+    void HoldBicycle()
+    {
+        if (bicycle != null) bicycle.ResetToStart();
+    }
+
+    void ReleaseStart()
+    {
+        HoldBicycle();
+        cd = Countdown.Go;
+        goHideAt = Time.time + 0.8f;
+        if (goalLine != null) goalLine.StartTimerNow();
+        // 普段の走りは止まった状態から始まらないので、最初の数秒は自動で autoStartSpeed で走らせる
+        if (bicycle != null) bicycle.StartAutoSpeed(autoStartSpeed, autoStartSeconds);
+        if (headTracker != null) headTracker.BeginAutoZero(() => bicycle != null ? bicycle.velocity : float.MaxValue);
+        ShowCountdownText();
+        Debug.Log(string.Format("[Exp2b] カウントダウン終了：タイマー開始（試行開始から {0:F2} s）", Time.time - trialStartTime));
+    }
+
+    void StopCountdown()
+    {
+        if (cd == Countdown.WaitKey || cd == Countdown.Counting)
+        {
+            // カウントダウンの途中で試行を終えたときは、タイマーを動き出しで始める元の動きに戻しておく
+            if (goalLine != null) goalLine.waitForStartSignal = false;
+        }
+        cd = Countdown.None;
+        if (countdownText != null) countdownText.gameObject.SetActive(false);
+    }
+
+    void ShowCountdownText()
+    {
+        if (countdownText == null) SetupCountdownText();
+        if (countdownText == null) return;
+        countdownText.gameObject.SetActive(true);
+        float s = Mathf.Max(0.5f, Screen.height / 1080f);
+        switch (cd)
+        {
+            case Countdown.WaitKey:
+                countdownText.fontSize = Mathf.RoundToInt(countdownFontSize * 0.09f * s);
+                countdownText.text = "準備ができたら、実験者がテンキーの ＋ を押してください";
+                break;
+            case Countdown.Counting:
+                countdownText.fontSize = Mathf.RoundToInt(countdownFontSize * s);
+                countdownText.text = Mathf.CeilToInt(cdEnd - Time.time).ToString();
+                break;
+            case Countdown.Go:
+                countdownText.fontSize = Mathf.RoundToInt(countdownFontSize * 0.6f * s);
+                countdownText.text = "スタート";
+                break;
+        }
+    }
+
+    // 画面の真ん中の大きな文字（タイマーの文字をコピーして作る）
+    void SetupCountdownText()
+    {
+        if (goalLine == null || goalLine.timerText == null) return;
+        Text timer = goalLine.timerText;
+        var go = Instantiate(timer.gameObject, timer.transform.parent);
+        go.name = "Exp2bCountdownText";
+        foreach (var mb in go.GetComponents<MonoBehaviour>())
+            if (!(mb is Text) && !(mb is UnityEngine.UI.Shadow)) Destroy(mb);
+        countdownText = go.GetComponent<Text>();
+        StyleHudText(countdownText, countdownFontSize);
+        countdownText.alignment = TextAnchor.MiddleCenter;
+        countdownText.color = Color.white;
+        var rt = (RectTransform)go.transform;
+        rt.anchorMin = new Vector2(0f, 0f);
+        rt.anchorMax = new Vector2(1f, 1f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+        go.transform.SetAsLastSibling();
     }
 
     // ---------------- 衝突の判定と車のブレーキ ----------------
@@ -502,10 +771,24 @@ public class Exp2bTrialManager : MonoBehaviour
 
     void ApplyCarSafeDistance()
     {
+        SetupCarCrossingZone();
         if (carSafeDistance < 0f) return;
         foreach (var car in new[] { rightCar, leftCar })
             if (car != null) car.safeDistance = carSafeDistance;
         Debug.Log("[Exp2b] 車のブレーキ距離（Safe Distance）: " + carSafeDistance + " m");
+    }
+
+    // 車に「交差点（自転車の走る道路）」の範囲を渡す。車はこの手前で止まるか、止まれなければそのまま通り抜ける
+    void SetupCarCrossingZone()
+    {
+        if (!carsAvoidStoppingInIntersection || layout == null) return;
+        Transform L = layout.transform;
+        float a = L.TransformPoint(new Vector3(layout.bikeRoadLeftLineX, 0f, 0f)).z;
+        float b = L.TransformPoint(new Vector3(layout.bikeRoadRightLineX, 0f, 0f)).z;
+        float minZ = Mathf.Min(a, b) - crossingMargin, maxZ = Mathf.Max(a, b) + crossingMargin;
+        foreach (var car in new[] { rightCar, leftCar })
+            if (car != null) car.SetCrossingZone(minZ, maxZ);
+        Debug.Log(string.Format("[Exp2b] 車が止まらない交差点の範囲：z = {0:F2} 〜 {1:F2}", minZ, maxZ));
     }
 
     // 首振り：0 を合わせる前の左右の向き、そのときの 0 の位置、iPhone から届いているか
@@ -564,7 +847,7 @@ public class Exp2bTrialManager : MonoBehaviour
         int tSize = Mathf.RoundToInt(timerFontSize * s);
         StyleHudText(timer, tSize);
         var trt = (RectTransform)timer.transform;
-        PlaceBottomLeft(trt, hudMargin * s, hudMargin * s, tSize * 2.6f);   // 2 行（「間に合った！」など）まで入る高さ
+        PlaceBottomLeft(trt, hudMargin * s, hudBottom * s, tSize * 2.6f);   // 2 行（「間に合った！」など）まで入る高さ
 
         if (!showProgress)
         {
@@ -586,7 +869,7 @@ public class Exp2bTrialManager : MonoBehaviour
         progressText.text = "";
         // タイマーの枠のすぐ上（少し間をあける）
         PlaceBottomLeft((RectTransform)progressText.transform, hudMargin * s,
-                        hudMargin * s + trt.sizeDelta.y + pSize * 0.4f, pSize * 1.5f);
+                        hudBottom * s + trt.sizeDelta.y + pSize * 0.4f, pSize * 1.5f);
     }
 
     static void StyleHudText(Text t, int size)
@@ -626,6 +909,7 @@ public class Exp2bTrialManager : MonoBehaviour
     void UpdateCarTiming()
     {
         if (pendingCar == null || carLaunched || layout == null || bicycle == null) return;
+        if (cd == Countdown.WaitKey || cd == Countdown.Counting) return;   // カウントダウン中は出さない
 
         Transform L = layout.transform;
         Vector3 car = L.InverseTransformPoint(pendingCar.transform.position);   // 地下にいても x・z は初期位置と同じ
@@ -661,7 +945,9 @@ public class Exp2bTrialManager : MonoBehaviour
             if (p == phase) fullOffset = fullSequence.Count;
             // ほかのセットの並び：そのセットで使った種が残っていればそれ、無ければ既定の種で近似する
             int sd = p == phase ? usedSeed : (ReadSeed(p) ?? Exp2bSchedule.DefaultSeed(participant, p));
-            fullSequence.AddRange(Exp2bSchedule.Phase(p, participant, baseOrder, sd));
+            // そのセットを実際に走ったときの練習の回数（種のファイルの並びから数える。無ければ設定どおり）
+            int np = p == phase ? resumePracticeCount : ReadPracticeCount(p);
+            fullSequence.AddRange(Exp2bSchedule.Phase(p, participant, baseOrder, sd, np));
         }
     }
 
@@ -687,7 +973,9 @@ public class Exp2bTrialManager : MonoBehaviour
             int? prev = ReadSeed(phase);
             if (prev.HasValue)
             {
-                Debug.Log("[Exp2b] 途中から再開するので、前回の種を使います: " + prev.Value);
+                resumePracticeCount = ReadPracticeCount(phase);
+                Debug.Log("[Exp2b] 途中から再開するので、前回の種を使います: " + prev.Value +
+                          (resumePracticeCount >= 0 ? "（練習 " + resumePracticeCount + " 回）" : ""));
                 return prev.Value;
             }
             Debug.LogWarning("[Exp2b] 途中から再開しますが、前回の種（" + SeedPath(phase) + "）が無いので、新しい並びになります");
@@ -715,6 +1003,31 @@ public class Exp2bTrialManager : MonoBehaviour
             Debug.LogWarning("[Exp2b] 種のファイルを読めませんでした: " + e.Message);
         }
         return null;
+    }
+
+    // 種のファイルの最後の行の並びから、練習（id が P で始まる）の回数を数える。無ければ -1
+    int ReadPracticeCount(Exp2bPhase p)
+    {
+        try
+        {
+            string path = SeedPath(p);
+            if (!File.Exists(path)) return -1;
+            string[] lines = File.ReadAllLines(path);
+            for (int k = lines.Length - 1; k >= 1; k--)
+            {
+                string[] v = lines[k].Split(',');
+                if (v.Length < 4) continue;
+                int n = 0;
+                foreach (string id in v[3].Split(' '))
+                    if (id.Length > 1 && id[0] == 'P' && char.IsDigit(id[1])) n++;
+                return n;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("[Exp2b] 種のファイルを読めませんでした: " + e.Message);
+        }
+        return -1;
     }
 
     void SaveSeed()
@@ -769,7 +1082,7 @@ public class Exp2bTrialManager : MonoBehaviour
         log = new StreamWriter(path, false, new System.Text.UTF8Encoding(true));
         log.WriteLine("participant,phase,trialInPhase,trialOverall,id,kind,factorialNo,norm,sight,info,attention," +
                       TrialCondition.ZHeader +
-                      ",car,carLaunchSec,timesSeenThisLayout,prevTrialHadCar,goalSuccess,timeLeftSec,collision,collisionSec,minCarGap,durationSec,startClock,endClock,dataFile");
+                      ",car,carLaunchSec,timesSeenThisLayout,prevTrialHadCar,goalSuccess,timeLeftSec,collision,collisionSec,minCarGap,durationSec,startClock,endClock,dataFile,buttonPresses,buttonPressX");
         log.Flush();
         Debug.Log("[Exp2b] 試行の記録: " + path);
     }
